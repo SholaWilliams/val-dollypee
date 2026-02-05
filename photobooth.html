@@ -105,21 +105,33 @@
   <main>
     <p style="text-align:center; max-width:900px; margin: 0 auto 16px; opacity:.75;">Replace the placeholders below with her photos by adding files under <code>assets/photos/</code> and updating paths. Click a photo to see it larger.</p>
     <!-- Scratch-off reveal card -->
-    <section style="max-width:900px; margin:0 auto 24px;">
-      <div id="scratchCard" style="position:relative; width:100%; height:280px; border-radius:16px; overflow:hidden; box-shadow:0 18px 60px rgba(0,0,0,.12);">
-        <img src="assets/photos/photo1.jpg" alt="Hidden" style="width:100%; height:100%; object-fit:cover; display:block;">
+    <section style="max-width:900px; margin:0 auto 24px; display:flex; justify-content:center;">
+      <div id="scratchCard" style="position:relative; width:min(380px, 92vw); aspect-ratio: 3 / 4; border-radius:16px; overflow:hidden; box-shadow:0 18px 60px rgba(0,0,0,.12);">
+        <img src="assets/photos/2geda.jpeg" alt="Hidden" style="width:100%; height:100%; object-fit:cover; display:block;" onerror="this.src='assets/photos/2geda.jpg'">
         <canvas id="scratchCanvas" style="position:absolute; inset:0; background:linear-gradient(135deg,#e6d5ff,#ffd6e7);"></canvas>
         <div style="position:absolute; bottom:12px; left:0; right:0; text-align:center; font-weight:700; color:#3a2434;">Scratch to reveal 💝</div>
       </div>
     </section>
     <section class="grid" id="grid">
-      <!-- Example entries referencing local assets; replace with your images -->
-      <figure class="polaroid"><img src="assets/photos/photo1.jpg" alt="Her photo"><figcaption class="caption">✨</figcaption></figure>
-      <figure class="polaroid"><img src="assets/photos/photo2.jpg" alt="Her photo"><figcaption class="caption">💖</figcaption></figure>
-      <figure class="polaroid"><img src="assets/photos/photo3.jpg" alt="Her photo"><figcaption class="caption">🌸</figcaption></figure>
-      <figure class="polaroid"><img src="assets/photos/photo4.jpg" alt="Her photo"><figcaption class="caption">😊</figcaption></figure>
-      <figure class="polaroid"><img src="assets/photos/photo5.jpg" alt="Her photo"><figcaption class="caption">🌟</figcaption></figure>
-      <figure class="polaroid"><img src="assets/photos/photo6.jpg" alt="Her photo"><figcaption class="caption">❤️</figcaption></figure>
+      <!-- Photo booth entries using dee1..dee12 with .jpg/.jpeg fallback -->
+      <figure class="polaroid"><img src="assets/photos/dee1.jpg" onerror="this.src='assets/photos/dee1.jpeg'" alt="dee1"><figcaption class="caption">✨</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee2.jpg" onerror="this.src='assets/photos/dee2.jpeg'" alt="dee2"><figcaption class="caption">💖</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee3.jpg" onerror="this.src='assets/photos/dee3.jpeg'" alt="dee3"><figcaption class="caption">🌸</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee4.jpg" onerror="this.src='assets/photos/dee4.jpeg'" alt="dee4"><figcaption class="caption">😊</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee5.jpg" onerror="this.src='assets/photos/dee5.jpeg'" alt="dee5"><figcaption class="caption">🌟</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee6.jpg" onerror="this.src='assets/photos/dee6.jpeg'" alt="dee6"><figcaption class="caption">❤️</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee7.jpg" onerror="this.src='assets/photos/dee7.jpeg'" alt="dee7"><figcaption class="caption">🌼</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee8.jpg" onerror="this.src='assets/photos/dee8.jpeg'" alt="dee8"><figcaption class="caption">💫</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee9.jpg" onerror="this.src='assets/photos/dee9.jpeg'" alt="dee9"><figcaption class="caption">🌷</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee10.jpg" onerror="this.src='assets/photos/dee10.jpeg'" alt="dee10"><figcaption class="caption">🎀</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee11.jpg" onerror="this.src='assets/photos/dee11.jpeg'" alt="dee11"><figcaption class="caption">💐</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee12.jpg" onerror="this.src='assets/photos/dee12.jpeg'" alt="dee12"><figcaption class="caption">🌙</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee13.jpg" onerror="this.src='assets/photos/dee13.jpeg'" alt="dee13"><figcaption class="caption">💎</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee14.jpg" onerror="this.src='assets/photos/dee14.jpeg'" alt="dee14"><figcaption class="caption">🌻</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee15.jpg" onerror="this.src='assets/photos/dee15.jpeg'" alt="dee15"><figcaption class="caption">⭐</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee16.jpg" onerror="this.src='assets/photos/dee16.jpeg'" alt="dee16"><figcaption class="caption">🍓</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee17.jpg" onerror="this.src='assets/photos/dee17.jpeg'" alt="dee17"><figcaption class="caption">🦋</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee18.jpg" onerror="this.src='assets/photos/dee18.jpeg'" alt="dee18"><figcaption class="caption">💞</figcaption></figure>
     </section>
   </main>
 

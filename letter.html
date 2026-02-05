@@ -237,9 +237,9 @@
       textarea.value = "";
       const full = messageLines.join("\n");
       function step(){
-        typingIndex = Math.min(full.length, typingIndex + Math.ceil(2 + Math.random()*2));
+        typingIndex = Math.min(full.length, typingIndex + 1); // slower: one char per tick
         textarea.value = full.slice(0, typingIndex);
-        if(typingIndex < full.length){ typingTimer = setTimeout(step, 40); }
+        if(typingIndex < full.length){ typingTimer = setTimeout(step, 85); } // slower tick
         else { textarea.disabled = false; }
       }
       step();
