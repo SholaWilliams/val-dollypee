@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Love Notes 💌</title>
+  <style>
+    :root { --bg1:#fff2f9; --bg2:#ffeaf5; --accent:#ff3b7a; --accentDark:#ff1f68; }
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100svh;background:radial-gradient(circle at top,var(--bg2),var(--bg1));font-family:system-ui,sans-serif;display:grid;place-items:center;padding:18px;}
+    .wrap{width:min(900px,94vw);background:#ffffffd6;border-radius:18px;box-shadow:0 18px 60px rgba(0,0,0,.12);backdrop-filter:blur(10px);padding:20px;}
+    h1{text-align:center;margin:6px 0 14px}
+    .carousel{position:relative;overflow:hidden;border-radius:14px}
+    .slides{display:flex;transition:transform .4s ease;}
+    .note{flex:0 0 100%; padding:20px; display:grid; place-items:center; min-height:280px; background:linear-gradient(135deg,#ffe4ef,#f7f0ff); color:#3a2434; font-weight:700; font-size:clamp(18px,3.6vw,26px); text-align:center;}
+    .controls{display:flex; justify-content:center; gap:10px; margin-top:12px}
+    .btn{background:var(--accent); color:#fff; border:none; border-radius:999px; padding:10px 14px; font-weight:700; box-shadow:0 10px 24px rgba(0,0,0,.14); cursor:pointer}
+    .btn:hover{background:var(--accentDark)}
+    .dots{display:flex; justify-content:center; gap:6px; margin-top:8px}
+    .dot{width:8px; height:8px; border-radius:999px; background:#e5c2d2;}
+    .dot.active{background:#ff1f68}
+    .nav{display:flex; justify-content:space-between; align-items:center; margin-bottom:8px}
+    .nav .link{background:var(--accent); color:#fff; border:none; border-radius:999px; padding:8px 12px; font-weight:700; box-shadow:0 10px 24px rgba(0,0,0,.14); cursor:pointer}
+    .nav .link:hover{background:var(--accentDark)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="nav">
+      <button class="link" onclick="location.href='letter.html'">Back</button>
+      <h1>Love Notes</h1>
+      <button class="link" onclick="location.href='photobooth.html'">Photos</button>
+    </div>
+
+    <div class="carousel" id="carousel">
+      <div class="slides" id="slides">
+        <div class="note">You are my happiest thought. 💗</div>
+        <div class="note">Your smile is my favorite sunrise. 🌅</div>
+        <div class="note">Every day with you is my best day. ✨</div>
+        <div class="note">You make ordinary moments feel magical. 🪄</div>
+        <div class="note">Thank you for being you. ❤️</div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn" id="prev">◀️ Prev</button>
+      <button class="btn" id="next">Next ▶️</button>
+    </div>
+    <div class="dots" id="dots"></div>
+  </div>
+
+  <script>
+    const slides = document.getElementById('slides');
+    const dots = document.getElementById('dots');
+    const total = slides.children.length;
+    let idx = 0;
+
+    function render(){ slides.style.transform = `translateX(-${idx*100}%)`; [...dots.children].forEach((d,i)=> d.classList.toggle('active', i===idx)); }
+    function makeDots(){ for(let i=0;i<total;i++){ const d=document.createElement('div'); d.className='dot'; d.addEventListener('click', ()=>{ idx=i; render(); }); dots.appendChild(d);} render(); }
+    document.getElementById('prev').addEventListener('click', ()=>{ idx=(idx-1+total)%total; render(); });
+    document.getElementById('next').addEventListener('click', ()=>{ idx=(idx+1)%total; render(); });
+    makeDots();
+
+    // Auto-advance gently
+    setInterval(()=>{ idx=(idx+1)%total; render(); }, 4500);
+  </script>
+</body>
+</html>
