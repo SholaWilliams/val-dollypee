@@ -1,6 +1,6 @@
 (function(){
   function initMusicPlayer(options){
-    const opts = Object.assign({ containerId: 'audioWidget', tracks: [], autoStart: true }, options || {});
+    const opts = Object.assign({ containerId: 'audioWidget', tracks: [], autoStart: true, spotify: {} }, options || {});
     const container = document.getElementById(opts.containerId);
     if(!container){ console.warn('[player] container not found'); return; }
 
@@ -19,38 +19,141 @@
     const audio = new Audio();
     audio.loop = true;
     audio.preload = 'auto';
-    audio.crossOrigin = 'anonymous';
+    // crossOrigin set later depending on origin
 
-    const tracks = Array.isArray(opts.tracks) && opts.tracks.length ? opts.tracks : ['assets/music.mp3'];
-    const pick = tracks[Math.floor(Math.random() * tracks.length)];
-    audio.src = pick;
+    // Build track list: prefer global playlist (playlist.js), then opts.tracks, then manifest, then built-ins
+    const globalList = Array.isArray(window.PLAYLIST_TRACKS) ? window.PLAYLIST_TRACKS.slice() : null;
+    let tracks = (globalList && globalList.length)
+      ? globalList
+      : (Array.isArray(opts.tracks) && opts.tracks.length ? opts.tracks.slice() : ['assets/music/song1.mp3','assets/music/song2.mp3','assets/music/song3.mp3']);
+    const hasGlobalPlaylist = !!(globalList && globalList.length);
+
+    // Spotify integration (previews only). Requires a valid access token.
+    const spotify = opts.spotify || {};
+    const spClientId = spotify.clientId || (window.SPOTIFY_CLIENT_ID || '');
+    const spPlaylistId = spotify.playlistId || (window.SPOTIFY_PLAYLIST_ID || '');
+
+    // Store token from URL hash if present (Implicit Grant)
+    (function captureSpotifyTokenFromHash(){
+      if(location.hash && location.hash.includes('access_token')){
+        const params = new URLSearchParams(location.hash.substring(1));
+        const token = params.get('access_token');
+        const expiresIn = parseInt(params.get('expires_in') || '3600', 10);
+        if(token){
+          const expAt = Date.now() + (expiresIn * 1000);
+          try {
+            localStorage.setItem('spotify_token', token);
+            localStorage.setItem('spotify_token_exp', String(expAt));
+          } catch {}
+          // Remove token fragment from URL
+          history.replaceState(null, document.title, location.pathname + location.search);
+        }
+      }
+    })();
+
+    function getStoredSpotifyToken(){
+      try {
+        const token = localStorage.getItem('spotify_token');
+        const exp = parseInt(localStorage.getItem('spotify_token_exp') || '0', 10);
+        if(token && exp > Date.now()) return token;
+      } catch {}
+      return null;
+    }
+
+    async function fetchSpotifyPreviewTracks(playlistId){
+      const token = getStoredSpotifyToken();
+      if(!token) return [];
+      try {
+        const url = `https://api.spotify.com/v1/playlists/${encodeURIComponent(playlistId)}/tracks?fields=items(track(name,preview_url))&limit=100`;
+        const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+        if(!res.ok) return [];
+        const json = await res.json();
+        const previews = (json.items || [])
+          .map(i => i && i.track && i.track.preview_url)
+          .filter(Boolean);
+        return previews;
+      } catch { return []; }
+    }
+
+    // Local manifest (assets/music/playlist.json)
+    let localPlaylistPromise = (async ()=>{
+      try {
+        if(location.protocol === 'file:'){
+          console.warn('[player] Skipping playlist.json fetch on file:// to avoid CORS; using built-in tracks.');
+          return [];
+        }
+        const res = await fetch('assets/music/playlist.json', { cache: 'no-store' });
+        if(!res.ok) return [];
+        const json = await res.json();
+        if(Array.isArray(json) && json.length) return json.map(s => String(s));
+        return [];
+      } catch {
+        console.warn('[player] Failed to load playlist.json; using built-in tracks.');
+        return [];
+      }
+    })();
+
+    // If we have a playlist id and a stored token, try Spotify previews (optional/future)
+    let usingSpotify = false;
+    let spotifyPreviewsPromise = null;
+    if(spPlaylistId){
+      const token = getStoredSpotifyToken();
+      if(token){
+        usingSpotify = true;
+        spotifyPreviewsPromise = fetchSpotifyPreviewTracks(spPlaylistId).then(list => {
+          if(Array.isArray(list) && list.length){ tracks = list; }
+          else { usingSpotify = false; }
+        });
+      }
+    }
 
     let actx, analyser, sourceNode;
+    let useSimulatedBars = false;
 
     function setupAudio(){
       if(!actx){
         const AC = window.AudioContext || window.webkitAudioContext;
         actx = new AC();
-        analyser = actx.createAnalyser();
-        analyser.fftSize = 512; // frequency resolution
-        analyser.smoothingTimeConstant = 0.8; // smoother bars
-        sourceNode = actx.createMediaElementSource(audio);
-        sourceNode.connect(analyser);
-        analyser.connect(actx.destination);
+        try {
+          analyser = actx.createAnalyser();
+          analyser.fftSize = 512; // frequency resolution
+          analyser.smoothingTimeConstant = 0.8; // smoother bars
+          sourceNode = actx.createMediaElementSource(audio);
+          sourceNode.connect(analyser);
+          analyser.connect(actx.destination);
+          useSimulatedBars = false;
+        } catch (e) {
+          console.warn('[player] Visualizer using simulated bars (CORS or file:// restrictions).', e);
+          analyser = null;
+          sourceNode = null;
+          useSimulatedBars = true;
+        }
       }
     }
 
     function draw(){
       const w = canvas.width, h = canvas.height;
-      const buffer = new Uint8Array(analyser.frequencyBinCount);
+      const buffer = analyser ? new Uint8Array(analyser.frequencyBinCount) : new Uint8Array(256);
       const bars = 24;
       const gap = 3;
       const barW = Math.floor((w - gap * (bars-1)) / bars);
 
       function frame(){
-        if(!analyser){ requestAnimationFrame(frame); return; }
-        analyser.getByteFrequencyData(buffer);
         ctx2d.clearRect(0,0,w,h);
+        if(analyser){
+          analyser.getByteFrequencyData(buffer);
+        } else if(useSimulatedBars){
+          // Generate smooth pseudo spectrum that reacts to play/pause
+          const t = performance.now() * 0.002;
+          for(let i=0;i<buffer.length;i++){
+            const f = i / buffer.length;
+            const amp = audio.paused ? 0.15 : 0.7;
+            const val = Math.max(0, Math.sin(t + f*6) * 0.5 + 0.5) * 255 * amp;
+            buffer[i] = val;
+          }
+        } else {
+          // No analyser and not simulating — nothing to draw
+        }
         for(let i=0;i<bars;i++){
           const idx = Math.floor(i * buffer.length / bars);
           const v = buffer[idx] / 255; // 0..1
@@ -69,6 +172,52 @@
 
     function updateBtn(){ btn.textContent = audio.paused ? 'Play ▶️' : 'Pause ⏸️'; }
 
+    function pickRandomTrack(){
+      if(!tracks || !tracks.length) return null;
+      const idx = Math.floor(Math.random() * tracks.length);
+      return tracks[idx];
+    }
+
+    async function ensureTrackListResolved(){
+      // Prefer local manifest if present and no explicit global playlist
+      if(localPlaylistPromise && !hasGlobalPlaylist){
+        try {
+          const list = await localPlaylistPromise;
+          if(Array.isArray(list) && list.length){ tracks = list; }
+        } catch {}
+        localPlaylistPromise = null;
+      }
+      if(spotifyPreviewsPromise){
+        try { await spotifyPreviewsPromise; } catch {}
+        spotifyPreviewsPromise = null;
+      }
+    }
+
+    function isSameOrigin(url){
+      try {
+        const u = new URL(url, location.href);
+        return u.origin === location.origin;
+      } catch { return false; }
+    }
+
+    async function startPlayback(){
+      await ensureTrackListResolved();
+      const pick = pickRandomTrack();
+      if(pick){
+        audio.src = pick;
+        // Set crossOrigin only when needed (different origin)
+        if(location.protocol === 'file:' || isSameOrigin(pick)){
+          audio.crossOrigin = '';
+        } else {
+          audio.crossOrigin = 'anonymous';
+        }
+      }
+      setupAudio();
+      try { await actx.resume(); } catch {}
+      try { await audio.play(); } catch {}
+      updateBtn();
+    }
+
     btn.addEventListener('click', async ()=>{
       setupAudio();
       try { await actx.resume(); } catch {}
@@ -84,15 +233,31 @@
 
     // Try to autoplay
     if(opts.autoStart){
-      setupAudio();
-      actx.resume && actx.resume();
-      audio.play().then(()=>{ updateBtn(); }).catch(()=>{ updateBtn(); /* show play button; user gesture needed */ });
+      startPlayback().catch(()=>{ updateBtn(); });
     } else { updateBtn(); }
+
+    // When a preview ends, pick another random track automatically
+    audio.addEventListener('ended', () => {
+      audio.loop = false; // for previews we want next, not loop
+      const next = pickRandomTrack();
+      if(next){ audio.src = next; audio.play().catch(()=>{}); }
+    });
 
     draw();
 
     // expose simple controls (optional)
     window.__musicPlayer = { audio, play: ()=>audio.play(), pause: ()=>audio.pause(), toggle: ()=> audio.paused ? audio.play() : audio.pause() };
+
+    // Optional helper to initiate Spotify auth (Implicit Grant)
+    window.__musicPlayerSpotifyLogin = function(){
+      const clientId = spClientId;
+      if(!clientId){ alert('Missing Spotify Client ID.'); return; }
+      const redirectUri = location.origin + location.pathname; // return to current page
+      const scope = encodeURIComponent('playlist-read-private');
+      const authUrl = `https://accounts.spotify.com/authorize?response_type=token&client_id=${encodeURIComponent(clientId)}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}`;
+      // Open same tab to get token in hash
+      location.href = authUrl;
+    };
   }
 
   window.initMusicPlayer = initMusicPlayer;

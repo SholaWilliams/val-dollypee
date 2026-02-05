@@ -199,7 +199,7 @@
     // Pre-fill the letter content
     const textarea = document.querySelector("textarea");
     textarea.value = [
-      "Dear Nirali,",
+      "Dear Dolapo,",
       "",
       "I just wanted to say how much you mean to me.",
       "You make my days brighter and my heart lighter.",
@@ -218,10 +218,10 @@
 
     // Initialize shared audio player with random tracks
     const tracks = [
-      "assets/music.mp3",            // default single track (optional)
-      "assets/music/song1.mp3",
-      "assets/music/song2.mp3",
-      "assets/music/song3.mp3"
+      "assets/music/ordinary.mp3"  ,          // default single track (optional)
+    //   "assets/music/song1.mp3",
+    //   "assets/music/song2.mp3",
+    //   "assets/music/song3.mp3"
     ];
     window.addEventListener("DOMContentLoaded", () => {
       if (window.initMusicPlayer) {
@@ -229,6 +229,7 @@
       }
     });
   </script>
+  <script src="assets/music/playlist.js"></script>
   <script src="assets/player.js"></script>
 </body>
 </html>
