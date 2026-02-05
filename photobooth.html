@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Photo Booth 💞</title>
+  <style>
+    :root {
+      --bg1: #fff2f7;
+      --bg2: #ffe7f0;
+      --card: #ffffffd6;
+      --accent: #ff3b7a;
+      --accentDark: #ff1f68;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100svh;
+      font-family: system-ui, sans-serif;
+      background: radial-gradient(circle at top, var(--bg2), var(--bg1));
+      overflow-x: hidden;
+    }
+
+    .hearts { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
+    .emoji-heart { position: absolute; animation: fall linear forwards; filter: drop-shadow(0 6px 8px rgba(0,0,0,.12)); opacity: .95; }
+    @keyframes fall { from { transform: translateY(-10vh); opacity: .95; } to { transform: translateY(110vh); opacity: .15; } }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: linear-gradient(to bottom, rgba(255,255,255,.85), rgba(255,255,255,.6));
+      backdrop-filter: blur(8px);
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 8px 24px rgba(0,0,0,.08);
+    }
+
+    h1 { margin: 0; font-size: clamp(22px, 4vw, 34px); }
+
+    .nav-btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-weight: 700;
+      box-shadow: 0 10px 24px rgba(0,0,0,.14);
+      cursor: pointer;
+    }
+    .nav-btn:hover { background: var(--accentDark); }
+
+    main { position: relative; z-index: 2; padding: 24px; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 22px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .polaroid {
+      background: #fff;
+      border-radius: 12px;
+      padding: 12px 12px 18px;
+      box-shadow: 0 18px 60px rgba(0,0,0,.12);
+      transform-origin: center;
+      transition: transform .18s ease, box-shadow .18s ease;
+      will-change: transform;
+    }
+    .polaroid:hover { transform: scale(1.03) rotate(0deg); box-shadow: 0 22px 70px rgba(0,0,0,.16); }
+
+    .polaroid img {
+      width: 100%;
+      aspect-ratio: 3/4;
+      object-fit: cover;
+      border-radius: 8px;
+      display: block;
+      background: #ffe6f1;
+    }
+
+    .caption { margin-top: 10px; text-align: center; color: #3a2434; font-weight: 700; }
+
+    /* Floating audio widget */
+    .audio-widget { position: fixed; right: 16px; bottom: 16px; z-index: 5; display:flex; align-items:center; gap:10px; background: rgba(255,255,255,.8); backdrop-filter: blur(8px); border-radius: 14px; padding: 10px 12px; box-shadow: 0 12px 32px rgba(0,0,0,.18); }
+    .audio-widget canvas { width: 160px; height: 50px; display:block; }
+    .audio-widget .play-btn { background: var(--accent); color:#fff; border:none; border-radius:999px; padding:8px 12px; font-weight:700; box-shadow:0 10px 24px rgba(0,0,0,.14); cursor:pointer; }
+    .audio-widget .play-btn:hover { background: var(--accentDark); }
+  </style>
+</head>
+<body>
+  <div class="hearts" id="hearts"></div>
+  <div id="audioWidget" class="audio-widget"></div>
+
+  <header>
+    <h1>Photo Booth</h1>
+    <button class="nav-btn" onclick="window.location.href='letter.html'">Back</button>
+  </header>
+
+  <main>
+    <p style="text-align:center; max-width:900px; margin: 0 auto 16px; opacity:.75;">Replace the placeholders below with her photos by adding files under <code>assets/photos/</code> and updating paths. Click a photo to see it larger.</p>
+    <section class="grid" id="grid">
+      <!-- Example entries referencing local assets; replace with your images -->
+      <figure class="polaroid"><img src="assets/photos/photo1.jpg" alt="Her photo"><figcaption class="caption">✨</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/photo2.jpg" alt="Her photo"><figcaption class="caption">💖</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/photo3.jpg" alt="Her photo"><figcaption class="caption">🌸</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/photo4.jpg" alt="Her photo"><figcaption class="caption">😊</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/photo5.jpg" alt="Her photo"><figcaption class="caption">🌟</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/photo6.jpg" alt="Her photo"><figcaption class="caption">❤️</figcaption></figure>
+    </section>
+  </main>
+
+  
+
+  <script>
+    // Hearts
+    const hearts = document.getElementById('hearts');
+    const emojis = ['❤️','💖','💘','💕','💞','💓','💗'];
+    function spawnHeart(){
+      const el=document.createElement('span'); el.className='emoji-heart'; el.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+      const size=Math.random()*20+18, left=Math.random()*100, duration=Math.random()*4+6, delay=Math.random()*1.5;
+      el.style.fontSize=size+'px'; el.style.left=left+'vw'; el.style.animationDuration=duration+'s'; el.style.animationDelay=delay+'s';
+      hearts.appendChild(el); setTimeout(()=>el.remove(), (duration+delay)*1000+250);
+    }
+    for(let i=0;i<24;i++) spawnHeart(); setInterval(spawnHeart, 360);
+
+    // Music
+    // Initialize shared audio player with random tracks
+    const tracks = [
+      'assets/music.mp3',
+      'assets/music/song1.mp3',
+      'assets/music/song2.mp3',
+      'assets/music/song3.mp3'
+    ];
+    window.addEventListener('DOMContentLoaded', ()=>{
+      if(window.initMusicPlayer){ window.initMusicPlayer({ containerId:'audioWidget', tracks, autoStart:true }); }
+    });
+
+    // Random rotation for polaroids + simple lightbox
+    const grid = document.getElementById('grid');
+    [...grid.querySelectorAll('.polaroid')].forEach((fig)=>{
+      const deg = (Math.random()*12-6).toFixed(2);
+      fig.style.transform = `rotate(${deg}deg)`;
+      fig.addEventListener('click', ()=> showLarge(fig.querySelector('img').src));
+    });
+
+    function showLarge(src){
+      const overlay = document.createElement('div');
+      overlay.style.position='fixed'; overlay.style.inset='0'; overlay.style.background='rgba(0,0,0,.6)'; overlay.style.backdropFilter='blur(4px)'; overlay.style.zIndex='10';
+      const img = document.createElement('img'); img.src=src; img.style.maxWidth='92vw'; img.style.maxHeight='92vh'; img.style.borderRadius='12px'; img.style.boxShadow='0 18px 60px rgba(0,0,0,.5)';
+      const wrap=document.createElement('div'); wrap.style.width='100%'; wrap.style.height='100%'; wrap.style.display='grid'; wrap.style.placeItems='center';
+      wrap.appendChild(img); overlay.appendChild(wrap); document.body.appendChild(overlay);
+      overlay.addEventListener('click', ()=> overlay.remove());
+    }
+  </script>
+  <script src="assets/player.js"></script>
+</body>
+</html>
