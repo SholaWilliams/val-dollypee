@@ -10,9 +10,22 @@
     const btn = document.createElement('button');
     btn.className = 'play-btn';
     btn.textContent = 'Pause ⏸️';
+    const nextBtn = document.createElement('button');
+    nextBtn.className = 'play-btn';
+    nextBtn.textContent = 'Next ⏭️';
+    const title = document.createElement('span');
+    title.className = 'track-title';
+    title.style.fontWeight = '700';
+    title.style.color = '#3a2434';
+    title.style.whiteSpace = 'nowrap';
+    title.style.maxWidth = '220px';
+    title.style.overflow = 'hidden';
+    title.style.textOverflow = 'ellipsis';
 
     container.appendChild(canvas);
     container.appendChild(btn);
+    container.appendChild(nextBtn);
+    container.appendChild(title);
 
     const ctx2d = canvas.getContext('2d');
 
@@ -172,6 +185,15 @@
 
     function updateBtn(){ btn.textContent = audio.paused ? 'Play ▶️' : 'Pause ⏸️'; }
 
+    function inferTitle(url){
+      try {
+        const u = new URL(url, location.href);
+        const name = u.pathname.split('/').pop() || url;
+        const base = decodeURIComponent(name).replace(/\.[a-zA-Z0-9]+$/, '');
+        return base;
+      } catch { return url; }
+    }
+
     function pickRandomTrack(){
       if(!tracks || !tracks.length) return null;
       const idx = Math.floor(Math.random() * tracks.length);
@@ -200,18 +222,28 @@
       } catch { return false; }
     }
 
+    function setTrack(url){
+      if(!url) return;
+      audio.src = url;
+      if(location.protocol === 'file:' || isSameOrigin(url)) audio.crossOrigin = '';
+      else audio.crossOrigin = 'anonymous';
+      title.textContent = inferTitle(url);
+    }
+
+    let currentIndex = -1;
+    function pickRandomIndex(){
+      if(!tracks || !tracks.length) return -1;
+      if(tracks.length === 1) return 0;
+      let idx;
+      do { idx = Math.floor(Math.random() * tracks.length); } while(idx === currentIndex);
+      return idx;
+    }
+
     async function startPlayback(){
       await ensureTrackListResolved();
-      const pick = pickRandomTrack();
-      if(pick){
-        audio.src = pick;
-        // Set crossOrigin only when needed (different origin)
-        if(location.protocol === 'file:' || isSameOrigin(pick)){
-          audio.crossOrigin = '';
-        } else {
-          audio.crossOrigin = 'anonymous';
-        }
-      }
+      currentIndex = pickRandomIndex();
+      const pick = currentIndex >= 0 ? tracks[currentIndex] : null;
+      setTrack(pick);
       setupAudio();
       try { await actx.resume(); } catch {}
       try { await audio.play(); } catch {}
@@ -226,6 +258,17 @@
       updateBtn();
     });
 
+    async function nextTrack(){
+      await ensureTrackListResolved();
+      currentIndex = pickRandomIndex();
+      const next = currentIndex >= 0 ? tracks[currentIndex] : null;
+      setTrack(next);
+      try { await actx.resume(); } catch {}
+      audio.play().catch(()=>{});
+      updateBtn();
+    }
+    nextBtn.addEventListener('click', nextTrack);
+
     // Clicking the widget also toggles
     container.addEventListener('click', (e)=>{
       if(e.target !== btn) btn.click();
@@ -238,15 +281,14 @@
 
     // When a preview ends, pick another random track automatically
     audio.addEventListener('ended', () => {
-      audio.loop = false; // for previews we want next, not loop
-      const next = pickRandomTrack();
-      if(next){ audio.src = next; audio.play().catch(()=>{}); }
+      audio.loop = false; // pick another when clip ends
+      nextTrack();
     });
 
     draw();
 
     // expose simple controls (optional)
-    window.__musicPlayer = { audio, play: ()=>audio.play(), pause: ()=>audio.pause(), toggle: ()=> audio.paused ? audio.play() : audio.pause() };
+    window.__musicPlayer = { audio, play: ()=>audio.play(), pause: ()=>audio.pause(), toggle: ()=> audio.paused ? audio.play() : audio.pause(), next: nextTrack };
 
     // Optional helper to initiate Spotify auth (Implicit Grant)
     window.__musicPlayerSpotifyLogin = function(){

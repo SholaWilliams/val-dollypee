@@ -151,10 +151,28 @@
       cursor: pointer;
     }
     .audio-widget .play-btn:hover { background: var(--accentDark); }
+    .audio-widget .track-title { font-size: 13px; }
+
+    /* Envelope overlay */
+    .envelope-overlay { position: fixed; inset: 0; z-index: 6; display: grid; place-items: center; background: radial-gradient(circle at top, rgba(255,246,252,.9), rgba(255,230,243,.9)); backdrop-filter: blur(8px); }
+    .envelope { width: min(440px, 88vw); height: 280px; position: relative; border-radius: 18px; background: #fff; box-shadow: 0 18px 60px rgba(0,0,0,.16); }
+    .flap { position: absolute; inset: 0; transform-origin: top; background: linear-gradient(180deg, #ffe1ec, #ffd1e4); clip-path: polygon(0 0, 100% 0, 50% 62%); transition: transform .6s ease; }
+    .open .flap { transform: rotateX(180deg); }
+    .open .envelope { transform: translateY(-8px); transition: transform .3s ease; }
+    .open-tip { position: absolute; inset: auto 0 12px; text-align: center; font-weight: 700; color: #7a4d70; }
+
+    /* Typewriter */
+    .skip-type-btn { margin-top: 10px; background:#eae3f7; color:#4a2d3c; border:none; border-radius:999px; padding:8px 12px; font-weight:700; cursor:pointer; }
   </style>
 </head>
 <body>
   <div class="hearts" id="hearts"></div>
+  <div class="envelope-overlay" id="envelope">
+    <div class="envelope" id="envBox">
+      <div class="flap"></div>
+      <div class="open-tip">Tap to open ✉️</div>
+    </div>
+  </div>
   <div id="audioWidget" class="audio-widget"></div>
 
   <main class="card">
@@ -163,8 +181,10 @@
     <textarea placeholder="Dear ..."></textarea>
     <div class="button-row">
       <button id="nextBtn" class="accent-btn">Next: Photo Booth ➜</button>
+      <button id="notesBtn" class="accent-btn" style="background:#7b5aa6">Love Notes 💌</button>
     </div>
     <div class="footer">Tip: You can resize the box to make it longer.</div>
+    <div style="text-align:center"><button id="skipType" class="skip-type-btn">Skip typing</button></div>
   </main>
 
   <script>
@@ -196,9 +216,9 @@
     for (let i = 0; i < 28; i++) spawnHeart();
     setInterval(spawnHeart, 360);
 
-    // Pre-fill the letter content
+    // Typewriter pre-fill the letter content
     const textarea = document.querySelector("textarea");
-    textarea.value = [
+    const messageLines = [
       "Dear Dolapo,",
       "",
       "I just wanted to say how much you mean to me.",
@@ -209,11 +229,35 @@
       "",
       "With love,",
       "—"
-    ].join("\n");
+    ];
+    let typingIndex = 0;
+    let typingTimer;
+    function startTypewriter(){
+      textarea.disabled = true;
+      textarea.value = "";
+      const full = messageLines.join("\n");
+      function step(){
+        typingIndex = Math.min(full.length, typingIndex + Math.ceil(2 + Math.random()*2));
+        textarea.value = full.slice(0, typingIndex);
+        if(typingIndex < full.length){ typingTimer = setTimeout(step, 40); }
+        else { textarea.disabled = false; }
+      }
+      step();
+    }
+    document.getElementById("skipType").addEventListener("click", ()=>{
+      clearTimeout(typingTimer);
+      textarea.value = messageLines.join("\n");
+      textarea.disabled = false;
+      const overlay = document.getElementById("envelope");
+      overlay.style.display = "none";
+    });
 
     // Navigate to photo booth
     document.getElementById("nextBtn").addEventListener("click", () => {
       window.location.href = "photobooth.html";
+    });
+    document.getElementById("notesBtn").addEventListener("click", () => {
+      window.location.href = "love-notes.html";
     });
 
     // Initialize shared audio player with random tracks
@@ -227,9 +271,38 @@
       if (window.initMusicPlayer) {
         window.initMusicPlayer({ containerId: "audioWidget", tracks, autoStart: true });
       }
+      const overlay = document.getElementById("envelope");
+      const box = document.getElementById("envBox");
+      function openEnvelope(){ box.classList.add("open"); setTimeout(()=>{ overlay.style.opacity = "0"; setTimeout(()=>{ overlay.style.display = "none"; startTypewriter(); }, 300); }, 450); }
+      overlay.addEventListener("click", openEnvelope);
+      document.addEventListener("pointerdown", function once(){ openEnvelope(); document.removeEventListener("pointerdown", once); }, { once:true });
     });
   </script>
   <script src="assets/music/playlist.js"></script>
   <script src="assets/player.js"></script>
+  <script>
+    // Lavender cursor trail hearts
+    (function(){
+      const trail = document.createElement('div');
+      trail.style.position='fixed'; trail.style.inset='0'; trail.style.pointerEvents='none'; trail.style.zIndex='7';
+      document.body.appendChild(trail);
+      function spawn(x,y){
+        const s=document.createElement('span'); s.textContent='💜'; // lavender-ish heart
+        s.style.position='absolute'; s.style.left=x+'px'; s.style.top=y+'px'; s.style.fontSize=(12+Math.random()*10)+'px'; s.style.opacity='0.9';
+        s.style.filter='drop-shadow(0 4px 6px rgba(181,126,220,.35))';
+        trail.appendChild(s);
+        const dx=(Math.random()*2-1)*24, dy=(Math.random()*2-1)*24;
+        const start=performance.now();
+        function frame(now){
+          const t=(now-start)/600; if(t>=1){ s.remove(); return; }
+          s.style.transform=`translate(${dx*t}px,${dy*t}px) scale(${1-t*0.2})`;
+          s.style.opacity=String(0.9*(1-t));
+          requestAnimationFrame(frame);
+        }
+        requestAnimationFrame(frame);
+      }
+      document.addEventListener('pointermove', e=>{ spawn(e.clientX, e.clientY); });
+    })();
+  </script>
 </body>
 </html>
