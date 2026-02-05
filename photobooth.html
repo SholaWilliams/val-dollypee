@@ -107,7 +107,10 @@
     <!-- Scratch-off reveal card -->
     <section style="max-width:900px; margin:0 auto 24px; display:flex; justify-content:center;">
       <div id="scratchCard" style="position:relative; width:min(380px, 92vw); aspect-ratio: 3 / 4; border-radius:16px; overflow:hidden; box-shadow:0 18px 60px rgba(0,0,0,.12);">
-        <img src="assets/photos/2geda.jpeg" alt="Hidden" style="width:100%; height:100%; object-fit:cover; display:block;" onerror="this.src='assets/photos/2geda.jpg'">
+        <video id="scratchVideo" autoplay muted loop playsinline style="width:100%; height:100%; object-fit:cover; display:block;">
+          <source src="assets/photos/2geda.mp4" type="video/mp4">
+          <source src="assets/photos/2geda.webm" type="video/webm">
+        </video>
         <canvas id="scratchCanvas" style="position:absolute; inset:0; background:linear-gradient(135deg,#e6d5ff,#ffd6e7);"></canvas>
         <div style="position:absolute; bottom:12px; left:0; right:0; text-align:center; font-weight:700; color:#3a2434;">Scratch to reveal 💝</div>
       </div>
@@ -132,6 +135,8 @@
       <figure class="polaroid"><img src="assets/photos/dee16.jpg" onerror="this.src='assets/photos/dee16.jpeg'" alt="dee16"><figcaption class="caption">🍓</figcaption></figure>
       <figure class="polaroid"><img src="assets/photos/dee17.jpg" onerror="this.src='assets/photos/dee17.jpeg'" alt="dee17"><figcaption class="caption">🦋</figcaption></figure>
       <figure class="polaroid"><img src="assets/photos/dee18.jpg" onerror="this.src='assets/photos/dee18.jpeg'" alt="dee18"><figcaption class="caption">💞</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee19.jpg" onerror="this.src='assets/photos/dee19.jpeg'" alt="dee19"><figcaption class="caption">💜</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee20.jpg" onerror="this.src='assets/photos/dee20.jpeg'" alt="dee20"><figcaption class="caption">🌺</figcaption></figure>
     </section>
   </main>
 
@@ -152,6 +157,7 @@
     // Scratch-off logic
     (function(){
       const canvas = document.getElementById('scratchCanvas');
+      const video = document.getElementById('scratchVideo');
       const card = document.getElementById('scratchCard');
       const ctx = canvas.getContext('2d');
       function resize(){ canvas.width = card.clientWidth; canvas.height = card.clientHeight; ctx.fillStyle = '#cdb3ff'; ctx.fillRect(0,0,canvas.width,canvas.height); }
@@ -159,7 +165,7 @@
       window.addEventListener('resize', resize);
       let scratching = false;
       function erase(x,y){ ctx.globalCompositeOperation = 'destination-out'; ctx.beginPath(); ctx.arc(x,y,26,0,Math.PI*2); ctx.fill(); ctx.globalCompositeOperation = 'source-over'; }
-      canvas.addEventListener('pointerdown', e=>{ scratching = true; erase(e.offsetX,e.offsetY); });
+      canvas.addEventListener('pointerdown', e=>{ scratching = true; erase(e.offsetX,e.offsetY); if(video){ video.play().catch(()=>{}); } });
       canvas.addEventListener('pointermove', e=>{ if(scratching) erase(e.offsetX,e.offsetY); });
       canvas.addEventListener('pointerup', ()=>{ scratching = false; checkReveal(); });
       canvas.addEventListener('pointerleave', ()=>{ scratching = false; });
@@ -180,19 +186,55 @@
 
     // Random rotation for polaroids + simple lightbox
     const grid = document.getElementById('grid');
-    [...grid.querySelectorAll('.polaroid')].forEach((fig)=>{
+    const galleryImgs = [...grid.querySelectorAll('.polaroid img')];
+    galleryImgs.forEach((imgEl, i)=>{
       const deg = (Math.random()*12-6).toFixed(2);
-      fig.style.transform = `rotate(${deg}deg)`;
-      fig.addEventListener('click', ()=> showLarge(fig.querySelector('img').src));
+      imgEl.closest('.polaroid').style.transform = `rotate(${deg}deg)`;
+      imgEl.closest('.polaroid').addEventListener('click', ()=> showLarge(i));
     });
 
-    function showLarge(src){
+    function showLarge(index){
+      let current = index;
       const overlay = document.createElement('div');
-      overlay.style.position='fixed'; overlay.style.inset='0'; overlay.style.background='rgba(0,0,0,.6)'; overlay.style.backdropFilter='blur(4px)'; overlay.style.zIndex='10';
-      const img = document.createElement('img'); img.src=src; img.style.maxWidth='92vw'; img.style.maxHeight='92vh'; img.style.borderRadius='12px'; img.style.boxShadow='0 18px 60px rgba(0,0,0,.5)';
+      overlay.style.position='fixed'; overlay.style.inset='0'; overlay.style.background='rgba(0,0,0,.65)'; overlay.style.backdropFilter='blur(4px)'; overlay.style.zIndex='20'; overlay.style.cursor='zoom-out';
       const wrap=document.createElement('div'); wrap.style.width='100%'; wrap.style.height='100%'; wrap.style.display='grid'; wrap.style.placeItems='center';
+      const img = document.createElement('img'); img.style.maxWidth='92vw'; img.style.maxHeight='92vh'; img.style.borderRadius='12px'; img.style.boxShadow='0 18px 60px rgba(0,0,0,.5)'; img.style.userSelect='none'; img.style.pointerEvents='none';
+
+      function setSrc(){ img.src = galleryImgs[current].src; }
+      function next(){ current = (current + 1) % galleryImgs.length; setSrc(); }
+      function prev(){ current = (current - 1 + galleryImgs.length) % galleryImgs.length; setSrc(); }
+
+      setSrc();
       wrap.appendChild(img); overlay.appendChild(wrap); document.body.appendChild(overlay);
-      overlay.addEventListener('click', ()=> overlay.remove());
+
+      // Close on backdrop click or Esc
+      overlay.addEventListener('click', (e)=>{ if(e.target === overlay || e.target === wrap) overlay.remove(); });
+      function onKey(e){ if(e.key==='Escape') overlay.remove(); else if(e.key==='ArrowRight') next(); else if(e.key==='ArrowLeft') prev(); }
+      window.addEventListener('keydown', onKey);
+
+      // Swipe support
+      let startX=null, startY=null, moved=false;
+      overlay.addEventListener('pointerdown', e=>{ startX=e.clientX; startY=e.clientY; moved=false; });
+      overlay.addEventListener('pointermove', e=>{ if(startX!=null){ const dx=e.clientX-startX, dy=e.clientY-startY; if(Math.hypot(dx,dy)>10) moved=true; } });
+      overlay.addEventListener('pointerup', e=>{
+        if(startX!=null){
+          const dx=e.clientX-startX;
+          if(Math.abs(dx)>40){ dx<0 ? next() : prev(); }
+          startX=null; startY=null;
+        }
+      });
+
+      // Wheel to navigate
+      let wheelLock=false;
+      overlay.addEventListener('wheel', e=>{
+        e.preventDefault();
+        if(wheelLock) return; wheelLock=true;
+        if(e.deltaY>0) next(); else prev();
+        setTimeout(()=>wheelLock=false, 300);
+      }, { passive:false });
+
+      // Cleanup
+      overlay.addEventListener('remove', ()=>{ window.removeEventListener('keydown', onKey); });
     }
   </script>
   <script src="assets/music/playlist.js"></script>
