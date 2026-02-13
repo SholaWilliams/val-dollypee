@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Afterglow</title>
+  <style>
+    :root {
+      --bg1:#fff2f7;
+      --bg2:#ffe7f0;
+      --card:#ffffffd8;
+      --text:#2f1d2a;
+      --muted:#4a2d3c;
+      --accent:#ff3b7a;
+      --accent2:#ff6b9a;
+    }
+    *{box-sizing:border-box;}
+    body{
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:radial-gradient(circle at 20% 25%, rgba(255,99,163,0.08), transparent 38%),
+                 radial-gradient(circle at 78% 20%, rgba(255,59,122,0.08), transparent 34%),
+                 linear-gradient(145deg, var(--bg2), var(--bg1));
+      color:var(--text);
+      font-family:system-ui, sans-serif;
+      padding:28px 22px 36px;
+      overflow-x:hidden;
+      overflow-y:auto;
+      animation:fadeIn 1.4s ease forwards;
+    }
+    .orb{position:absolute; width:260px; height:260px; background:radial-gradient(circle, rgba(255,99,163,0.18), transparent 60%); filter:blur(26px); opacity:0.5; z-index:0; animation:float 11s ease-in-out infinite alternate;}
+    .orb.b{left:12%; top:14%;}
+    .orb.c{right:10%; bottom:12%; animation-duration:13s;}
+
+    /* Hearts drift */
+    .hearts{position:fixed; inset:0; pointer-events:none; z-index:1; overflow:hidden;}
+    .emoji-heart{position:absolute; animation:fall linear forwards; filter:drop-shadow(0 6px 8px rgba(0,0,0,.12)); opacity:.9; will-change:transform; user-select:none;}
+    @keyframes fall{from{transform:translateY(-10vh); opacity:.9;} to{transform:translateY(110vh); opacity:.15;}}
+
+    /* Shared floating audio widget */
+    .audio-widget{position:fixed; right:16px; bottom:16px; z-index:5; display:flex; align-items:center; gap:10px; background:rgba(255,255,255,.8); backdrop-filter:blur(8px); border-radius:14px; padding:10px 12px; box-shadow:0 12px 32px rgba(0,0,0,.18);}
+    .audio-widget canvas{width:160px; height:50px; display:block;}
+    .audio-widget .play-btn{background:var(--accent); color:#fff; border:none; border-radius:999px; padding:8px 12px; font-weight:700; box-shadow:0 10px 24px rgba(0,0,0,.14); cursor:pointer;}
+    .audio-widget .play-btn:hover{background:var(--accent2);}
+
+    .card{
+      position:relative;
+      z-index:2;
+      width:min(820px,94vw);
+      padding:34px 28px;
+      background:var(--card);
+      border-radius:22px;
+      box-shadow:0 20px 70px rgba(0,0,0,0.16);
+      backdrop-filter:blur(10px);
+      text-align:center;
+      animation:rise 1.0s ease forwards;
+      opacity:0;
+      transform:translateY(10px);
+      margin:20px 0 28px;
+    }
+    h1{margin:0 0 14px; font-size:clamp(24px,4.2vw,40px); letter-spacing:0.2px; color:var(--text);}    
+    p{margin:12px auto 18px; line-height:1.7; font-size:clamp(17px,3vw,20px); color:var(--muted); max-width:640px; opacity:0; transform:translateY(8px); animation:fadeUp 1s ease forwards;}
+    p:nth-of-type(1){animation-delay:.4s; color:var(--text);}
+    .accent-btn{margin-top:10px; background:var(--accent); color:#fff; border:none; border-radius:999px; padding:12px 18px; font-weight:800; box-shadow:0 10px 24px rgba(0,0,0,.14); cursor:pointer; transition:transform .15s ease, box-shadow .15s ease; display:inline-flex; align-items:center; gap:8px;}
+    .accent-btn:hover{background:var(--accent2); transform:translateY(-1px); box-shadow:0 12px 28px rgba(0,0,0,.16);}
+    .accent-btn:active{transform:translateY(0);}
+
+    @keyframes fadeIn{from{opacity:0;} to{opacity:1;}}
+    @keyframes rise{to{opacity:1; transform:translateY(0);} }
+    @keyframes fadeUp{to{opacity:1; transform:translateY(0);} }
+    @keyframes float{from{transform:translateY(-10px);} to{transform:translateY(14px);} }
+  </style>
+</head>
+<body>
+  <div class="orb b"></div>
+  <div class="orb c"></div>
+  <div class="hearts" id="hearts"></div>
+  <div id="audioWidget" class="audio-widget"></div>
+  <div class="card">
+    <h1>Afterglow</h1>
+    <p>This little world will always be here for you.</p>
+    <button class="accent-btn" onclick="location.href='index.html'">Replay Our Story 🔁</button>
+  </div>
+
+  <script>
+    // Hearts drift slowly
+    (function(){
+      const hearts = document.getElementById('hearts');
+      const emojis = ['❤️','💖','💘','💕','💞','💓','💗'];
+      function spawn(){
+        const el=document.createElement('span');
+        el.className='emoji-heart';
+        el.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+        const size=Math.random()*20+18;
+        const left=Math.random()*100;
+        const duration=Math.random()*6+10; // 10-16s slow drift
+        const delay=Math.random()*1.5;
+        el.style.fontSize=size+'px';
+        el.style.left=left+'vw';
+        el.style.animationDuration=duration+'s';
+        el.style.animationDelay=delay+'s';
+        hearts.appendChild(el);
+        setTimeout(()=>el.remove(), (duration+delay)*1000+400);
+      }
+      for(let i=0;i<18;i++) spawn();
+      setInterval(spawn, 520);
+    })();
+
+    // Shared music widget
+    const tracks = [
+      'assets/music.mp3',
+      'assets/music/song1.mp3',
+      'assets/music/song2.mp3',
+      'assets/music/song3.mp3'
+    ];
+    window.addEventListener('DOMContentLoaded', ()=>{
+      if(window.initMusicPlayer){ window.initMusicPlayer({ containerId:'audioWidget', tracks, autoStart:true, volume:0.55 }); }
+    });
+  </script>
+  <script src="assets/music/playlist.js"></script>
+  <script src="assets/player.js"></script>
+</body>
+</html>
