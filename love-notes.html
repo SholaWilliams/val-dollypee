@@ -7,8 +7,11 @@
   <style>
     :root { --bg1:#fff2f9; --bg2:#ffeaf5; --accent:#ff3b7a; --accentDark:#ff1f68; }
     *{box-sizing:border-box}
-    body{margin:0;min-height:100svh;background:radial-gradient(circle at top,var(--bg2),var(--bg1));font-family:system-ui,sans-serif;display:grid;place-items:center;padding:18px;}
-    .wrap{width:min(900px,94vw);background:#ffffffd6;border-radius:18px;box-shadow:0 18px 60px rgba(0,0,0,.12);backdrop-filter:blur(10px);padding:20px;}
+    body{margin:0;min-height:100svh;background:radial-gradient(circle at top,var(--bg2),var(--bg1));font-family:system-ui,sans-serif;display:grid;place-items:center;padding:18px; overflow:hidden;}
+    .hearts{position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:1;}
+    .emoji-heart{position:absolute; animation:fall linear forwards; filter:drop-shadow(0 6px 8px rgba(0,0,0,.12)); opacity:.95; will-change:transform; user-select:none; pointer-events:none;}
+    @keyframes fall{from{transform:translateY(-10vh) rotate(45deg); opacity:.95;} to{transform:translateY(110vh) rotate(45deg); opacity:.2;}}
+    .wrap{position:relative; z-index:2; width:min(900px,94vw);background:#ffffffd6;border-radius:18px;box-shadow:0 18px 60px rgba(0,0,0,.12);backdrop-filter:blur(10px);padding:20px;}
     h1{text-align:center;margin:6px 0 14px}
     .carousel{position:relative;overflow:hidden;border-radius:14px}
     .slides{display:flex;transition:transform .4s ease;}
@@ -22,9 +25,31 @@
     .nav{display:flex; justify-content:space-between; align-items:center; margin-bottom:8px}
     .nav .link{background:var(--accent); color:#fff; border:none; border-radius:999px; padding:8px 12px; font-weight:700; box-shadow:0 10px 24px rgba(0,0,0,.14); cursor:pointer}
     .nav .link:hover{background:var(--accentDark)}
+
+    /* Audio widget */
+    .audio-widget{position:fixed; right:16px; bottom:16px; z-index:5; display:flex; align-items:center; gap:10px; background:rgba(255,255,255,.8); backdrop-filter:blur(8px); border-radius:14px; padding:10px 12px; box-shadow:0 12px 32px rgba(0,0,0,.18);}
+    .audio-widget canvas{width:160px; height:50px; display:block;}
+    .audio-widget .play-btn{background:var(--accent); color:#fff; border:none; border-radius:999px; padding:8px 12px; font-weight:700; box-shadow:0 10px 24px rgba(0,0,0,.14); cursor:pointer;}
+    .audio-widget .play-btn:hover{background:var(--accentDark)}
+    .audio-widget .track-title{font-size:13px;}
+
+    /* Secret popup */
+    .secret-backdrop{position:fixed; inset:0; background:rgba(0,0,0,.5); backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; z-index:20; opacity:0; pointer-events:none; transition:opacity .3s ease;}
+    .secret-backdrop.show{opacity:1; pointer-events:auto;}
+    .secret-card{background:#fff; padding:20px; border-radius:14px; box-shadow:0 18px 60px rgba(0,0,0,.18); max-width:420px; width:90%; text-align:center;}
+    .secret-card h2{margin:0 0 10px;}
+    .secret-card p{margin:8px 0; line-height:1.5; color:#3a2434;}
+    .close-btn{margin-top:12px; background:var(--accent); color:#fff; border:none; border-radius:999px; padding:10px 14px; font-weight:700; cursor:pointer; box-shadow:0 10px 24px rgba(0,0,0,.14);}
+    .close-btn:hover{background:var(--accentDark)}
+
+    /* Tiny hidden trigger */
+    .hidden-trigger{position:fixed; right:12px; bottom:12px; font-size:14px; opacity:0.35; cursor:pointer; z-index:21; user-select:none;}
+    .hidden-trigger:hover{opacity:0.7;}
   </style>
 </head>
 <body>
+  <div class="hearts" id="hearts"></div>
+  <div id="audioWidget" class="audio-widget"></div>
   <div class="wrap">
     <div class="nav">
       <button class="link" onclick="location.href='letter.html'">Back</button>
@@ -34,11 +59,52 @@
 
     <div class="carousel" id="carousel">
       <div class="slides" id="slides">
-        <div class="note">You are my happiest thought. 💗</div>
-        <div class="note">Your smile is my favorite sunrise. 🌅</div>
-        <div class="note">Every day with you is my best day. ✨</div>
-        <div class="note">You make ordinary moments feel magical. 🪄</div>
-        <div class="note">Thank you for being you. ❤️</div>
+      <div class="note">Still you. Always you. 💗</div>
+
+<div class="note">Distance tried… but failed. You still feel close. ✨</div>
+
+<div class="note">I look at you and feel grateful, not lucky — grateful.</div>
+
+<div class="note">My heart chose you long before I understood why.</div>
+
+<div class="note">Loving you feels guided, not accidental.</div>
+
+<div class="note">You + Me = God knew what He was doing 😌</div>
+
+<div class="note">Sweetie, HOWW FARR NAAAAAA. 🤍</div>
+
+<div class="note">I almost wrote YOU ARE THE AIR I BREATHE😂</div>
+
+<div class="note">Mami, your love feels like home.</div>
+
+<div class="note">Let my heart know your NAMEEEEE 😂❤️</div>
+
+<div class="note">Dee… you make my world softer without trying. 💫</div>
+
+<div class="note">Dee Lolo, you are my peace and my joy.</div>
+
+<div class="note">Aduke mi, my heart rests in you. ❤️</div>
+
+<div class="note">MYYY INDAAAAAAAAAAAAAAAAAAAAAAAA❤️</div>
+
+<div class="note">Your smile? Illegal. It steals my heart every time. 😌</div>
+
+<div class="note">I blame you for my constant smiling. 🙃</div>
+
+<div class="note">Honestly… you’re too sweet. It’s suspicious. 😂</div>
+
+<div class="note">How are you this cute and still real? 🤨❤️</div>
+
+<div class="note">OMO… God really showed off when He made you. 😌✨</div>
+
+<div class="note">You are my happiest thought, every single day. 💭💗</div>
+
+<div class="note">Even in silence… it is still you I choose.</div>
+
+<div class="note">If hearts recognize home… mine found you.</div>
+
+<div class="note">Forever sounds simple when it includes you. 💞</div>
+
       </div>
     </div>
 
@@ -47,6 +113,18 @@
       <button class="btn" id="next">Next ▶️</button>
     </div>
     <div class="dots" id="dots"></div>
+  </div>
+
+  <!-- Hidden trigger (Option A) -->
+  <div class="hidden-trigger" id="hiddenTrigger" title="hi dee">dee</div>
+
+  <!-- Secret popup (shared for time trigger and hidden click) -->
+  <div class="secret-backdrop" id="secretBackdrop">
+    <div class="secret-card">
+      <h2 id="secretTitle">Hey Sweetie…</h2>
+      <p id="secretBody">I know you’re still here reading. I just want you to know — this world exists because of you. And I would build it again… every time.</p>
+      <button class="close-btn" id="secretClose">Close</button>
+    </div>
   </div>
 
   <script>
@@ -63,6 +141,69 @@
 
     // Auto-advance gently
     setInterval(()=>{ idx=(idx+1)%total; render(); }, 4500);
+
+    // Secret popup logic (Options A & B)
+    const backdrop = document.getElementById('secretBackdrop');
+    const titleEl = document.getElementById('secretTitle');
+    const bodyEl = document.getElementById('secretBody');
+    const closeBtn = document.getElementById('secretClose');
+    const trigger = document.getElementById('hiddenTrigger');
+
+    function showSecret(t, b){
+      titleEl.textContent = t;
+      bodyEl.textContent = b;
+      backdrop.classList.add('show');
+      sessionStorage.setItem('secret_shown', '1');
+    }
+    function hideSecret(){ backdrop.classList.remove('show'); }
+    closeBtn.addEventListener('click', hideSecret);
+    backdrop.addEventListener('click', (e)=>{ if(e.target === backdrop) hideSecret(); });
+
+    // Hidden click trigger (Option A)
+    trigger.addEventListener('click', ()=>{
+      showSecret('If you found this…', 'It means you looked deeper. Just like you did with me. And I’m grateful you chose to stay. — Yours always.');
+    });
+
+    // Time-triggered popup (Option B) after 60s active
+    let timer; let elapsed = 0; let last = performance.now();
+    function step(now){
+      const dt = now - last; last = now;
+      if(!document.hidden){ elapsed += dt; }
+      if(elapsed >= 60000 && !sessionStorage.getItem('secret_shown')){
+        showSecret('Hey Sweetie…', 'I know you’re still here reading. I just want you to know something.. This world exists because of You. And I would build it again… every time.');
+        return;
+      }
+      timer = requestAnimationFrame(step);
+    }
+    if(!sessionStorage.getItem('secret_shown')){
+      timer = requestAnimationFrame(step);
+    }
+
+    // Hearts
+    (function(){
+      const hearts = document.getElementById('hearts');
+      const emojis = ['❤️','💖','💘','💕','💞','💓','💗'];
+      function spawnHeart(){
+        const el=document.createElement('span'); el.className='emoji-heart'; el.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+        const size=Math.random()*20+18, left=Math.random()*100, duration=Math.random()*4+6, delay=Math.random()*1.5;
+        el.style.fontSize=size+'px'; el.style.left=left+'vw'; el.style.animationDuration=duration+'s'; el.style.animationDelay=delay+'s';
+        hearts.appendChild(el); setTimeout(()=>el.remove(), (duration+delay)*1000+250);
+      }
+      for(let i=0;i<24;i++) spawnHeart(); setInterval(spawnHeart, 360);
+    })();
+
+    // Music player
+    const tracks = [
+      'assets/music.mp3',
+      'assets/music/song1.mp3',
+      'assets/music/song2.mp3',
+      'assets/music/song3.mp3'
+    ];
+    window.addEventListener('DOMContentLoaded', ()=>{
+      if(window.initMusicPlayer){ window.initMusicPlayer({ containerId:'audioWidget', tracks, autoStart:true }); }
+    });
   </script>
+  <script src="assets/music/playlist.js"></script>
+  <script src="assets/player.js"></script>
 </body>
 </html>
