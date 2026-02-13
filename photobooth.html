@@ -30,14 +30,14 @@
     header {
       position: sticky;
       top: 0;
-      z-index: 2;
-      background: linear-gradient(to bottom, rgba(255,255,255,.85), rgba(255,255,255,.6));
-      backdrop-filter: blur(8px);
+      z-index: 6;
+      background: linear-gradient(to bottom, rgba(255,255,255,.92), rgba(255,255,255,.78));
+      backdrop-filter: blur(10px);
       padding: 14px 18px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      box-shadow: 0 8px 24px rgba(0,0,0,.08);
+      box-shadow: 0 8px 24px rgba(0,0,0,.12);
     }
 
     h1 { margin: 0; font-size: clamp(22px, 4vw, 34px); }
@@ -58,13 +58,17 @@
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 22px;
       max-width: 1100px;
       margin: 0 auto;
+      justify-items: center;
+      align-items: start;
     }
 
     .polaroid {
+      width: 100%;
+      max-width: 320px;
       background: #fff;
       border-radius: 12px;
       padding: 12px 12px 18px;
@@ -98,12 +102,12 @@
   <div id="audioWidget" class="audio-widget"></div>
 
   <header>
-    <h1>Photo Booth</h1>
+    <h1>Proof You Exist (because wow 😌)</h1>
     <button class="nav-btn" onclick="window.location.href='letter.html'">Back</button>
   </header>
 
   <main>
-    <p style="text-align:center; max-width:900px; margin: 0 auto 16px; opacity:.75;">Replace the placeholders below with her photos by adding files under <code>assets/photos/</code> and updating paths. Click a photo to see it larger.</p>
+    <p style="text-align:center; max-width:900px; margin: 0 auto 16px; opacity:.75;">These are the moments you chose to share with me...and they matter</p>
     <!-- Scratch-off reveal card -->
     <section style="max-width:900px; margin:0 auto 24px; display:flex; justify-content:center;">
       <div id="scratchCard" style="position:relative; width:min(380px, 92vw); aspect-ratio: 3 / 4; border-radius:16px; overflow:hidden; box-shadow:0 18px 60px rgba(0,0,0,.12);">
@@ -198,14 +202,36 @@
       const overlay = document.createElement('div');
       overlay.style.position='fixed'; overlay.style.inset='0'; overlay.style.background='rgba(0,0,0,.65)'; overlay.style.backdropFilter='blur(4px)'; overlay.style.zIndex='20'; overlay.style.cursor='zoom-out';
       const wrap=document.createElement('div'); wrap.style.width='100%'; wrap.style.height='100%'; wrap.style.display='grid'; wrap.style.placeItems='center';
-      const img = document.createElement('img'); img.style.maxWidth='92vw'; img.style.maxHeight='92vh'; img.style.borderRadius='12px'; img.style.boxShadow='0 18px 60px rgba(0,0,0,.5)'; img.style.userSelect='none'; img.style.pointerEvents='none';
 
-      function setSrc(){ img.src = galleryImgs[current].src; }
+      // If last photo, show secret video instead of image
+      const isSecret = current === galleryImgs.length - 1;
+      const img = document.createElement('img');
+      img.style.maxWidth='92vw'; img.style.maxHeight='92vh'; img.style.borderRadius='12px'; img.style.boxShadow='0 18px 60px rgba(0,0,0,.5)'; img.style.userSelect='none'; img.style.pointerEvents='none';
+
+      const vid = document.createElement('video');
+      vid.autoplay = true; vid.loop = true; vid.muted = true; vid.playsInline = true;
+      vid.style.maxWidth='92vw'; vid.style.maxHeight='92vh'; vid.style.borderRadius='12px'; vid.style.boxShadow='0 18px 60px rgba(0,0,0,.5)'; vid.style.userSelect='none';
+      const src1 = document.createElement('source'); src1.src='assets/videos/secret.mp4'; src1.type='video/mp4';
+      const src2 = document.createElement('source'); src2.src='assets/videos/secret.webm'; src2.type='video/webm';
+      vid.appendChild(src1); vid.appendChild(src2);
+
+      function setSrc(){
+        const secretNow = current === galleryImgs.length - 1;
+        if(secretNow){
+          if(wrap.contains(img)) wrap.removeChild(img);
+          if(!wrap.contains(vid)) wrap.appendChild(vid);
+          vid.play().catch(()=>{});
+        } else {
+          if(wrap.contains(vid)) wrap.removeChild(vid);
+          if(!wrap.contains(img)) wrap.appendChild(img);
+          img.src = galleryImgs[current].src;
+        }
+      }
       function next(){ current = (current + 1) % galleryImgs.length; setSrc(); }
       function prev(){ current = (current - 1 + galleryImgs.length) % galleryImgs.length; setSrc(); }
 
       setSrc();
-      wrap.appendChild(img); overlay.appendChild(wrap); document.body.appendChild(overlay);
+      overlay.appendChild(wrap); document.body.appendChild(overlay);
 
       // Close on backdrop click or Esc
       overlay.addEventListener('click', (e)=>{ if(e.target === overlay || e.target === wrap) overlay.remove(); });
