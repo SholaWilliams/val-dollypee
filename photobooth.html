@@ -58,7 +58,7 @@
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 22px;
       max-width: 1100px;
       margin: 0 auto;
@@ -102,23 +102,16 @@
   <div id="audioWidget" class="audio-widget"></div>
 
   <header>
-    <h1>Proof You Exist (because wow 😌)</h1>
-    <button class="nav-btn" onclick="window.location.href='letter.html'">Back</button>
+    <h1>Proof You Exist (because WOW 😌)</h1>
+      <div class="button-row">
+    <button class="nav-btn" onclick="window.location.href='letter.html'"  style="background:#7b5aa6">Back</button>
+    <button class="nav-btn" onclick="window.location.href='love-notes.html'"> ➜ The little things I think about…</button>
+        </div>
   </header>
 
   <main>
     <p style="text-align:center; max-width:900px; margin: 0 auto 16px; opacity:.75;">These are the moments you chose to share with me...and they matter</p>
-    <!-- Scratch-off reveal card -->
-    <section style="max-width:900px; margin:0 auto 24px; display:flex; justify-content:center;">
-      <div id="scratchCard" style="position:relative; width:min(380px, 92vw); aspect-ratio: 3 / 4; border-radius:16px; overflow:hidden; box-shadow:0 18px 60px rgba(0,0,0,.12);">
-        <video id="scratchVideo" autoplay muted loop playsinline style="width:100%; height:100%; object-fit:cover; display:block;">
-          <source src="assets/photos/2geda.mp4" type="video/mp4">
-          <source src="assets/photos/2geda.webm" type="video/webm">
-        </video>
-        <canvas id="scratchCanvas" style="position:absolute; inset:0; background:linear-gradient(135deg,#e6d5ff,#ffd6e7);"></canvas>
-        <div style="position:absolute; bottom:12px; left:0; right:0; text-align:center; font-weight:700; color:#3a2434;">Scratch to reveal 💝</div>
-      </div>
-    </section>
+
     <section class="grid" id="grid">
       <!-- Photo booth entries using dee1..dee12 with .jpg/.jpeg fallback -->
       <figure class="polaroid"><img src="assets/photos/dee1.jpg" onerror="this.src='assets/photos/dee1.jpeg'" alt="dee1"><figcaption class="caption">✨</figcaption></figure>
@@ -141,6 +134,18 @@
       <figure class="polaroid"><img src="assets/photos/dee18.jpg" onerror="this.src='assets/photos/dee18.jpeg'" alt="dee18"><figcaption class="caption">💞</figcaption></figure>
       <figure class="polaroid"><img src="assets/photos/dee19.jpg" onerror="this.src='assets/photos/dee19.jpeg'" alt="dee19"><figcaption class="caption">💜</figcaption></figure>
       <figure class="polaroid"><img src="assets/photos/dee20.jpg" onerror="this.src='assets/photos/dee20.jpeg'" alt="dee20"><figcaption class="caption">🌺</figcaption></figure>
+    </section>
+    
+        <!-- Scratch-off reveal card -->
+    <section style="max-width:900px; margin:0 auto 24px; display:flex; justify-content:center;">
+      <div id="scratchCard" style="position:relative; width:min(380px, 92vw); aspect-ratio: 3 / 4; border-radius:16px; overflow:hidden; box-shadow:0 18px 60px rgba(0,0,0,.12);">
+        <video id="scratchVideo" autoplay muted loop playsinline style="width:100%; height:100%; object-fit:cover; display:block;">
+          <source src="assets/photos/2geda.mp4" type="video/mp4">
+          <source src="assets/photos/2geda.webm" type="video/webm">
+        </video>
+        <canvas id="scratchCanvas" style="position:absolute; inset:0; background:linear-gradient(135deg,#e6d5ff,#ffd6e7);"></canvas>
+        <div style="position:absolute; bottom:12px; left:0; right:0; text-align:center; font-weight:700; color:#3a2434;">Scratch to reveal 💝</div>
+      </div>
     </section>
   </main>
 
