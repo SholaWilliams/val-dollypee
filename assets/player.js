@@ -269,9 +269,10 @@
     }
     nextBtn.addEventListener('click', nextTrack);
 
-    // Clicking the widget also toggles
+    // Clicking the widget (except the explicit buttons) toggles play
     container.addEventListener('click', (e)=>{
-      if(e.target !== btn) btn.click();
+      if(e.target === btn || e.target === nextBtn) return;
+      btn.click();
     });
 
     // Try to autoplay
