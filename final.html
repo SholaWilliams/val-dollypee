@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Always Yours</title>
+  <style>
+    :root {
+      --bg1:#fff2f7;
+      --bg2:#ffe7f0;
+      --card:#ffffffd8;
+      --text:#2f1d2a;
+      --muted:#4a2d3c;
+      --accent:#ff3b7a;
+      --accent2:#ff6b9a;
+    }
+    *{box-sizing:border-box;}
+    body{
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:radial-gradient(circle at 20% 25%, rgba(255,99,163,0.08), transparent 38%),
+                 radial-gradient(circle at 78% 20%, rgba(255,59,122,0.08), transparent 34%),
+                 linear-gradient(145deg, var(--bg2), var(--bg1));
+      color:var(--text);
+      font-family:system-ui, sans-serif;
+      padding:28px 22px 36px;
+      overflow-x:hidden;
+      overflow-y:auto;
+      animation:fadeIn 1.6s ease forwards;
+    }
+    .orb{position:absolute; width:260px; height:260px; background:radial-gradient(circle, rgba(255,99,163,0.18), transparent 60%); filter:blur(26px); opacity:0.5; z-index:0; animation:float 11s ease-in-out infinite alternate;}
+    .orb.b{left:12%; top:14%;}
+    .orb.c{right:10%; bottom:12%; animation-duration:13s;}
+
+    /* Shared floating audio widget */
+    .audio-widget{position:fixed; right:16px; bottom:16px; z-index:5; display:flex; align-items:center; gap:10px; background:rgba(255,255,255,.8); backdrop-filter:blur(8px); border-radius:14px; padding:10px 12px; box-shadow:0 12px 32px rgba(0,0,0,.18);}
+    .audio-widget canvas{width:160px; height:50px; display:block;}
+    .audio-widget .play-btn{background:var(--accent); color:#fff; border:none; border-radius:999px; padding:8px 12px; font-weight:700; box-shadow:0 10px 24px rgba(0,0,0,.14); cursor:pointer;}
+    .audio-widget .play-btn:hover{background:var(--accent2);}
+    .card{
+      position:relative;
+      z-index:1;
+      width:min(900px,94vw);
+      padding:36px 32px;
+      background:var(--card);
+      border-radius:22px;
+      box-shadow:0 20px 70px rgba(0,0,0,0.16);
+      backdrop-filter:blur(10px);
+      text-align:center;
+      animation:rise 1.0s ease forwards;
+      opacity:0;
+      transform:translateY(12px);
+      margin:20px 0 28px;
+    }
+    .accent-btn{margin-top:18px; background:var(--accent); color:#fff; border:none; border-radius:999px; padding:12px 18px; font-weight:800; box-shadow:0 10px 24px rgba(0,0,0,.14); cursor:pointer; transition:transform .15s ease, box-shadow .15s ease; display:inline-flex; align-items:center; gap:8px;}
+    .accent-btn:hover{background:var(--accent2); transform:translateY(-1px); box-shadow:0 12px 28px rgba(0,0,0,.16);}
+    .accent-btn:active{transform:translateY(0);}
+    h1{margin:0 0 18px; font-size:clamp(26px,4.6vw,44px); letter-spacing:0.2px; color:var(--text);}
+    p{margin:10px auto; line-height:1.65; font-size:clamp(16px,3vw,20px); color:var(--muted); max-width:720px; opacity:0; transform:translateY(10px); animation:fadeUp 1s ease forwards;}
+    p:nth-of-type(1){animation-delay:.4s; color:var(--text);} /* lead line */
+    p:nth-of-type(6){animation-delay:2.4s; color:var(--text); font-weight:700;}
+    .close{margin-top:24px; font-weight:800; color:var(--text); letter-spacing:0.4px; opacity:0; transform:translateY(8px); animation:fadeUp 1s ease forwards; animation-delay:2.8s;}
+    @keyframes fadeIn{from{opacity:0;} to{opacity:1;}}
+    @keyframes rise{to{opacity:1; transform:translateY(0);}}
+    @keyframes fadeUp{to{opacity:1; transform:translateY(0);}}
+    @keyframes float{from{transform:translateY(-10px);} to{transform:translateY(14px);}}
+  </style>
+</head>
+<body>
+  <div class="orb b"></div>
+  <div class="orb c"></div>
+  <div id="audioWidget" class="audio-widget"></div>
+  <div class="card">
+    <h1>Before you go…</h1>
+    <p>I just want you to know this. What we have is real to me. Not perfect. Not rushed. But real.</p>
+    <p>Through it all I have been able to realise that I am really lucky to have you in my life.</p>
+    <p>We are still growing, still learning, still building… and I am grateful I get to do life beside you. Sweetie. Mami. Dee Lolo.</p>
+    <p>It's one thing to be in a relationship it's another thing to be truly connected, deeply understood, and completely accepted.</p>
+    <p>It's one thing to be with someone it's another thing to really be in a partnership that helps you thrive, beat adversity and never doubt yourself.</p>
+    <p>That.. I would never take for granted.❤️</p>
+    <p>Sweetie, no matter how far, how busy, or how life shifts… you will always have a place in my heart</p>
+    <p>This was never just about today. This is us… choosing each other, again and again.</p>
+    <p>And if there is one thing I hope you never forget, it is this... 
+    <em>in you, I found peace I didn’t know I was searching for.</em></p>   
+    <p class="close">Always yours,<br>— Your Olushola❤️</p>
+    <button class="accent-btn" onclick="location.href='afterglow.html'"> Afterglow✨</button>
+  </div>
+
+  <script>
+    // Shared music widget, slightly louder for the final moment
+    const tracks = [
+      'assets/music.mp3',
+      'assets/music/song1.mp3',
+      'assets/music/song2.mp3',
+      'assets/music/song3.mp3'
+    ];
+    window.addEventListener('DOMContentLoaded', ()=>{
+      if(window.initMusicPlayer){ window.initMusicPlayer({ containerId:'audioWidget', tracks, autoStart:true, volume:0.55 }); }
+    });
+  </script>
+  <script src="assets/music/playlist.js"></script>
+  <script src="assets/player.js"></script>
+</body>
+</html>

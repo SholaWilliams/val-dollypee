@@ -1,0 +1,19 @@
+// Define a global playlist for offline/local use (works on file://)
+// Update with your actual song file paths.
+window.PLAYLIST_TRACKS = [
+  'assets/music/ordinary.mp3',
+  'assets/music/can-i-call-you-rose.mp3',
+  'assets/music/lmly.mp3',
+  'assets/music/odo.mp3',
+  'assets/music/o2.mp3',
+  'assets/music/serenade.mp3',
+  'assets/music/those-eyes.mp3',
+  'assets/music/wanna-be-yours(violin).mp3',
+  'assets/music/i-have-nothing.mp3',
+  'assets/music/best-part.mp3',
+  'assets/music/her.mp3',
+  'assets/music/i-am-your-angel.mp3',
+  'assets/music/legalize.mp3',
+  'assets/music/sweet-love.mp3',
+  'assets/music/yellow.mp3'
+];

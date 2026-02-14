@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Photo Booth 💞</title>
+  <style>
+    :root {
+      --bg1: #fff2f7;
+      --bg2: #ffe7f0;
+      --card: #ffffffd6;
+      --accent: #ff3b7a;
+      --accentDark: #ff1f68;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100svh;
+      font-family: system-ui, sans-serif;
+      background: radial-gradient(circle at top, var(--bg2), var(--bg1));
+      overflow-x: hidden;
+    }
+
+    .hearts { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
+    .emoji-heart { position: absolute; animation: fall linear forwards; filter: drop-shadow(0 6px 8px rgba(0,0,0,.12)); opacity: .95; }
+    @keyframes fall { from { transform: translateY(-10vh); opacity: .95; } to { transform: translateY(110vh); opacity: .15; } }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 6;
+      background: linear-gradient(to bottom, rgba(255,255,255,.92), rgba(255,255,255,.78));
+      backdrop-filter: blur(10px);
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 8px 24px rgba(0,0,0,.12);
+    }
+
+    h1 { margin: 0; font-size: clamp(22px, 4vw, 34px); }
+
+    .nav-btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-weight: 700;
+      box-shadow: 0 10px 24px rgba(0,0,0,.14);
+      cursor: pointer;
+    }
+    .nav-btn:hover { background: var(--accentDark); }
+
+    main { position: relative; z-index: 2; padding: 24px; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 22px;
+      max-width: 1100px;
+      margin: 0 auto;
+      justify-items: center;
+      align-items: start;
+    }
+
+    .polaroid {
+      width: 100%;
+      max-width: 320px;
+      background: #fff;
+      border-radius: 12px;
+      padding: 12px 12px 18px;
+      box-shadow: 0 18px 60px rgba(0,0,0,.12);
+      transform-origin: center;
+      transition: transform .18s ease, box-shadow .18s ease;
+      will-change: transform;
+    }
+    .polaroid:hover { transform: scale(1.03) rotate(0deg); box-shadow: 0 22px 70px rgba(0,0,0,.16); }
+
+    .polaroid img {
+      width: 100%;
+      aspect-ratio: 3/4;
+      object-fit: cover;
+      border-radius: 8px;
+      display: block;
+      background: #ffe6f1;
+    }
+
+    .caption { margin-top: 10px; text-align: center; color: #3a2434; font-weight: 700; }
+
+    /* Floating audio widget */
+    .audio-widget { position: fixed; right: 16px; bottom: 16px; z-index: 5; display:flex; align-items:center; gap:10px; background: rgba(255,255,255,.8); backdrop-filter: blur(8px); border-radius: 14px; padding: 10px 12px; box-shadow: 0 12px 32px rgba(0,0,0,.18); }
+    .audio-widget canvas { width: 160px; height: 50px; display:block; }
+    .audio-widget .play-btn { background: var(--accent); color:#fff; border:none; border-radius:999px; padding:8px 12px; font-weight:700; box-shadow:0 10px 24px rgba(0,0,0,.14); cursor:pointer; }
+    .audio-widget .play-btn:hover { background: var(--accentDark); }
+  </style>
+</head>
+<body>
+  <div class="hearts" id="hearts"></div>
+  <div id="audioWidget" class="audio-widget"></div>
+
+  <header>
+    <h1>Your Little Museum Cause You are a Work of ART</h1>
+    <div class="button-row">
+    <button class="nav-btn" onclick="window.location.href='letter.html'"  style="background:#7b5aa6">Back</button>
+    <button class="nav-btn" onclick="window.location.href='love-notes.html'"> ➜ The little things I think about…</button>
+    </div>
+  </header>
+
+  <main>
+    <p style="text-align:center; max-width:900px; margin: 0 auto 16px; opacity:.75;">These are the moments you chose to share with me...and they matter</p>
+
+    <section class="grid" id="grid">
+      <!-- Photo booth entries using dee1..dee12 with .jpg/.jpeg fallback -->
+      <figure class="polaroid"><img src="assets/photos/dee1.jpg" onerror="this.src='assets/photos/dee1.jpeg'" alt="dee1"><figcaption class="caption">My Sweetie, effortlessly stealing hearts (mostly mine)</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee2.jpg" onerror="this.src='assets/photos/dee2.jpeg'" alt="dee2"><figcaption class="caption">I’m not even joking, you glow differently</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee3.jpg" onerror="this.src='assets/photos/dee3.jpeg'" alt="dee3"><figcaption class="caption">Baddest in the Room</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee4.jpg" onerror="this.src='assets/photos/dee4.jpeg'" alt="dee4"><figcaption class="caption">You + this smile = my weakness</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee5.jpg" onerror="this.src='assets/photos/dee5.jpeg'" alt="dee5"><figcaption class="caption">Bam Bam Bang to the all Have you seen my Omo she is bad to the core</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee6.jpg" onerror="this.src='assets/photos/dee6.jpeg'" alt="dee6"><figcaption class="caption">Light is up for the Hottest in the room!!😍🔥</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee7.jpg" onerror="this.src='assets/photos/dee7.jpeg'" alt="dee7"><figcaption class="caption">You don’t try… yet you shine.</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee8.jpg" onerror="this.src='assets/photos/dee8.jpeg'" alt="dee8"><figcaption class="caption">Still crushing on you, not even joking</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee9.jpg" onerror="this.src='assets/photos/dee9.jpeg'" alt="dee9"><figcaption class="caption">I swear the camera likes you too much.</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee10.jpg" onerror="this.src='assets/photos/dee10.jpeg'" alt="dee10"><figcaption class="caption">The camera caught beauty… I see the soul.</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee11.jpg" onerror="this.src='assets/photos/dee11.jpeg'" alt="dee11"><figcaption class="caption">Fine Gyal looking all natural</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee12.jpg" onerror="this.src='assets/photos/dee12.jpeg'" alt="dee12"><figcaption class="caption">The more I look, the more I understand</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee13.jpg" onerror="this.src='assets/photos/dee13.jpeg'" alt="dee13"><figcaption class="caption">This glow? Yeah, it’s natural.</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee14.jpg" onerror="this.src='assets/photos/dee14.jpeg'" alt="dee14"><figcaption class="caption">Pretty face, precious heart.</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee15.jpg" onerror="this.src='assets/photos/dee15.jpeg'" alt="dee15"><figcaption class="caption">Head over heels Oh OHH!! </figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee16.jpg" onerror="this.src='assets/photos/dee16.jpeg'" alt="dee16"><figcaption class="caption">You turned ordinary into special everytime.</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee17.jpg" onerror="this.src='assets/photos/dee17.jpeg'" alt="dee17"><figcaption class="caption">My Aduke, effortlessly beautiful. 🤍</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee18.jpg" onerror="this.src='assets/photos/dee18.jpeg'" alt="dee18"><figcaption class="caption">I am a feind for the dopamine high you provideee!</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee19.jpg" onerror="this.src='assets/photos/dee19.jpeg'" alt="dee19"><figcaption class="caption">Pretty face, precious heart.</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee20.jpg" onerror="this.src='assets/photos/dee20.jpeg'" alt="dee20"><figcaption class="caption">If sweetness had a face… here it is.</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee21.jpg" onerror="this.src='assets/photos/dee21.jpeg'" alt="dee21"><figcaption class="caption">Shining bright, always.</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee22.jpg" onerror="this.src='assets/photos/dee22.jpeg'" alt="dee22"><figcaption class="caption">Cute, but dangerous… I fall every time.</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee23.jpg" onerror="this.src='assets/photos/dee23.jpeg'" alt="dee23"><figcaption class="caption">I saw this and whispered, “That’s my girl.”</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee24.jpg" onerror="this.src='assets/photos/dee24.jpeg'" alt="dee24"><figcaption class="caption">My Sweetie, forever my soft spot.</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee25.jpg" onerror="this.src='assets/photos/dee25.jpeg'" alt="dee25"><figcaption class="caption">An Artform a Masterpiece</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee26.jpg" onerror="this.src='assets/photos/dee26.jpeg'" alt="dee26"><figcaption class="caption">This is why my phone storage is suffering. 😌</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee27.jpg" onerror="this.src='assets/photos/dee27.jpeg'" alt="dee27"><figcaption class="caption">One picture, a thousand emotions.</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee28.jpg" onerror="this.src='assets/photos/dee28.jpeg'" alt="dee28"><figcaption class="caption">Beautiful… but it’s your soul for me.</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee29.jpg" onerror="this.src='assets/photos/dee29.jpeg'" alt="dee29"><figcaption class="caption">I don’t need perfect… I just need you.</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee30.jpg" onerror="this.src='assets/photos/dee30.jpeg'" alt="dee30"><figcaption class="caption">Still you. Still mine. Still everything.</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee31.jpg" onerror="this.src='assets/photos/dee31.jpeg'" alt="dee31"><figcaption class="caption">Sometimes I be like DAMN SHE FOIINEEE!!</figcaption></figure>
+      <figure class="polaroid"><img src="assets/photos/dee32.jpg" onerror="this.src='assets/photos/dee32.jpeg'" alt="dee32"><figcaption class="caption">OOUUUUWWWEEEEEE😍.</figcaption></figure>
+    </section>
+    
+    
+  </main>
+
+  
+
+  <script>
+    // Hearts
+    const hearts = document.getElementById('hearts');
+    const emojis = ['❤️','💖','💘','💕','💞','💓','💗'];
+    function spawnHeart(){
+      const el=document.createElement('span'); el.className='emoji-heart'; el.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+      const size=Math.random()*20+18, left=Math.random()*100, duration=Math.random()*4+6, delay=Math.random()*1.5;
+      el.style.fontSize=size+'px'; el.style.left=left+'vw'; el.style.animationDuration=duration+'s'; el.style.animationDelay=delay+'s';
+      hearts.appendChild(el); setTimeout(()=>el.remove(), (duration+delay)*1000+250);
+    }
+    for(let i=0;i<24;i++) spawnHeart(); setInterval(spawnHeart, 360);
+
+    // Scratch-off logic
+    // (function(){
+    //   const canvas = document.getElementById('scratchCanvas');
+    //   const video = document.getElementById('scratchVideo');
+    //   const card = document.getElementById('scratchCard');
+    //   const ctx = canvas.getContext('2d');
+    //   function resize(){ canvas.width = card.clientWidth; canvas.height = card.clientHeight; ctx.fillStyle = '#cdb3ff'; ctx.fillRect(0,0,canvas.width,canvas.height); }
+    //   resize();
+    //   window.addEventListener('resize', resize);
+    //   let scratching = false;
+    //   function erase(x,y){ ctx.globalCompositeOperation = 'destination-out'; ctx.beginPath(); ctx.arc(x,y,26,0,Math.PI*2); ctx.fill(); ctx.globalCompositeOperation = 'source-over'; }
+    //   canvas.addEventListener('pointerdown', e=>{ scratching = true; erase(e.offsetX,e.offsetY); if(video){ video.play().catch(()=>{}); } });
+    //   canvas.addEventListener('pointermove', e=>{ if(scratching) erase(e.offsetX,e.offsetY); });
+    //   canvas.addEventListener('pointerup', ()=>{ scratching = false; checkReveal(); });
+    //   canvas.addEventListener('pointerleave', ()=>{ scratching = false; });
+    //   function checkReveal(){ const imgData = ctx.getImageData(0,0,canvas.width,canvas.height).data; let cleared=0; for(let i=3;i<imgData.length;i+=4){ if(imgData[i]===0) cleared++; } const ratio = cleared/(imgData.length/4); if(ratio>0.5){ canvas.style.opacity='0'; setTimeout(()=>canvas.remove(), 250); } }
+    // })();
+
+    // Music
+    // Initialize shared audio player with random tracks
+    const tracks = [
+      'assets/music.mp3',
+      'assets/music/song1.mp3',
+      'assets/music/song2.mp3',
+      'assets/music/song3.mp3'
+    ];
+    window.addEventListener('DOMContentLoaded', ()=>{
+      if(window.initMusicPlayer){ window.initMusicPlayer({ containerId:'audioWidget', tracks, autoStart:true }); }
+    });
+
+    // Random rotation for polaroids + simple lightbox
+    const grid = document.getElementById('grid');
+    const galleryImgs = [...grid.querySelectorAll('.polaroid img')];
+    galleryImgs.forEach((imgEl, i)=>{
+      const deg = (Math.random()*12-6).toFixed(2);
+      imgEl.closest('.polaroid').style.transform = `rotate(${deg}deg)`;
+      imgEl.closest('.polaroid').addEventListener('click', ()=> showLarge(i));
+    });
+
+    function showLarge(index){
+      let current = index;
+      const overlay = document.createElement('div');
+      overlay.style.position='fixed'; overlay.style.inset='0'; overlay.style.background='rgba(0,0,0,.65)'; overlay.style.backdropFilter='blur(4px)'; overlay.style.zIndex='20'; overlay.style.cursor='zoom-out';
+      const wrap=document.createElement('div'); wrap.style.width='100%'; wrap.style.height='100%'; wrap.style.display='grid'; wrap.style.placeItems='center';
+
+      // If last photo, show secret video instead of image
+      const isSecret = current === galleryImgs.length;
+      const img = document.createElement('img');
+      img.style.maxWidth='92vw'; img.style.maxHeight='92vh'; img.style.borderRadius='12px'; img.style.boxShadow='0 18px 60px rgba(0,0,0,.5)'; img.style.userSelect='none'; img.style.pointerEvents='none';
+
+      const vid = document.createElement('video');
+      vid.autoplay = true; vid.loop = true; vid.muted = true; vid.playsInline = true;
+      vid.style.maxWidth='92vw'; vid.style.maxHeight='92vh'; vid.style.borderRadius='12px'; vid.style.boxShadow='0 18px 60px rgba(0,0,0,.5)'; vid.style.userSelect='none';
+      const src1 = document.createElement('source'); 
+      src1.src='https://res.cloudinary.com/dgxfsmck5/video/upload/v1771111688/Me_and_Dee_together_thmvy0.mp4'; src1.type='video/mp4';
+      const src2 = document.createElement('source');
+      src2.src='https://res.cloudinary.com/dgxfsmck5/video/upload/v1771111905/Me_and_Dee_together_lakqoo.webm'; src2.type='video/webm';
+      vid.appendChild(src1); vid.appendChild(src2);
+
+      function setSrc(){
+        const secretNow = current === galleryImgs.length - 1;
+        if(secretNow){
+          if(wrap.contains(img)) wrap.removeChild(img);
+          if(!wrap.contains(vid)) wrap.appendChild(vid);
+          vid.play().catch(()=>{});
+        } else {
+          if(wrap.contains(vid)) wrap.removeChild(vid);
+          if(!wrap.contains(img)) wrap.appendChild(img);
+          img.src = galleryImgs[current].src;
+        }
+      }
+      function next(){ current = (current + 1) % galleryImgs.length; setSrc(); }
+      function prev(){ current = (current - 1 + galleryImgs.length) % galleryImgs.length; setSrc(); }
+
+      setSrc();
+      overlay.appendChild(wrap); document.body.appendChild(overlay);
+
+      // Close on backdrop click or Esc
+      overlay.addEventListener('click', (e)=>{ if(e.target === overlay || e.target === wrap) overlay.remove(); });
+      function onKey(e){ if(e.key==='Escape') overlay.remove(); else if(e.key==='ArrowRight') next(); else if(e.key==='ArrowLeft') prev(); }
+      window.addEventListener('keydown', onKey);
+
+      // Swipe support
+      let startX=null, startY=null, moved=false;
+      overlay.addEventListener('pointerdown', e=>{ startX=e.clientX; startY=e.clientY; moved=false; });
+      overlay.addEventListener('pointermove', e=>{ if(startX!=null){ const dx=e.clientX-startX, dy=e.clientY-startY; if(Math.hypot(dx,dy)>10) moved=true; } });
+      overlay.addEventListener('pointerup', e=>{
+        if(startX!=null){
+          const dx=e.clientX-startX;
+          if(Math.abs(dx)>40){ dx<0 ? next() : prev(); }
+          startX=null; startY=null;
+        }
+      });
+
+      // Wheel to navigate
+      let wheelLock=false;
+      overlay.addEventListener('wheel', e=>{
+        e.preventDefault();
+        if(wheelLock) return; wheelLock=true;
+        if(e.deltaY>0) next(); else prev();
+        setTimeout(()=>wheelLock=false, 300);
+      }, { passive:false });
+
+      // Cleanup
+      overlay.addEventListener('remove', ()=>{ window.removeEventListener('keydown', onKey); });
+    }
+  </script>
+  <script src="assets/music/playlist.js"></script>
+  <script src="assets/player.js"></script>
+  <script>
+    // Lavender cursor trail hearts
+    (function(){
+      const trail = document.createElement('div');
+      trail.style.position='fixed'; trail.style.inset='0'; trail.style.pointerEvents='none'; trail.style.zIndex='7';
+      document.body.appendChild(trail);
+      function spawn(x,y){
+        const s=document.createElement('span'); s.textContent='💜';
+        s.style.position='absolute'; s.style.left=x+'px'; s.style.top=y+'px'; s.style.fontSize=(12+Math.random()*10)+'px'; s.style.opacity='0.9';
+        s.style.filter='drop-shadow(0 4px 6px rgba(181,126,220,.35))';
+        trail.appendChild(s);
+        const dx=(Math.random()*2-1)*24, dy=(Math.random()*2-1)*24;
+        const start=performance.now();
+        function frame(now){
+          const t=(now-start)/600; if(t>=1){ s.remove(); return; }
+          s.style.transform=`translate(${dx*t}px,${dy*t}px) scale(${1-t*0.2})`;
+          s.style.opacity=String(0.9*(1-t));
+          requestAnimationFrame(frame);
+        }
+        requestAnimationFrame(frame);
+      }
+      document.addEventListener('pointermove', e=>{ spawn(e.clientX, e.clientY); });
+    })();
+  </script>
+</body>
+</html>

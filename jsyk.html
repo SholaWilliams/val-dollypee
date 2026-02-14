@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Pause</title>
+  <style>
+    :root {
+      --bg1: #0f1118;
+      --bg2: #1a1d29;
+      --text: #e8e9f3;
+      --muted: #b6b8c7;
+      --accent: #ff5b8a;
+      --accent2: #ff8fb4;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100svh;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle at 20% 20%, rgba(255,91,138,0.08), transparent 40%),
+                  radial-gradient(circle at 80% 30%, rgba(255,143,180,0.08), transparent 38%),
+                  linear-gradient(135deg, var(--bg1), var(--bg2));
+      color: var(--text);
+      font-family: "Inter", system-ui, sans-serif;
+      padding: 18px;
+      overflow: hidden;
+    }
+
+    .wrap {
+      text-align: center;
+      max-width: 900px;
+      width: min(94vw, 900px);
+      padding: 34px 26px;
+      border-radius: 20px;
+      background: rgba(17, 19, 27, 0.6);
+      border: 1px solid rgba(255,255,255,0.05);
+      box-shadow: 0 18px 60px rgba(0,0,0,0.35);
+      backdrop-filter: blur(8px);
+    }
+
+    .line {
+      font-size: clamp(22px, 4vw, 34px);
+      line-height: 1.35;
+      margin: 0 auto 26px;
+      color: var(--text);
+      max-width: 100%;
+      animation: fadeLine 1.6s ease forwards;
+      opacity: 0;
+      transform: translateY(8px);
+    }
+
+    .hint { color: var(--muted); margin: 0 0 14px; font-size: 14px; opacity: 0.75; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 20px;
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(120deg, var(--accent), var(--accent2));
+      color: #0f0f14;
+      font-weight: 800;
+      font-size: 16px;
+      cursor: pointer;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.35);
+      text-decoration: none;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+      opacity: 0;
+      animation: fadeIn 0.8s ease forwards;
+      animation-delay: 3.9s;
+    }
+    .btn:hover { transform: translateY(-1px) scale(1.01); box-shadow: 0 14px 40px rgba(0,0,0,0.45); filter: brightness(1.03); }
+    .btn:active { transform: translateY(0); }
+
+    @keyframes fadeLine { from { opacity: 0; transform: translateY(8px);} to { opacity: 1; transform: translateY(0);} }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* Optional floating glow */
+    .orb {
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(255,91,138,0.35), transparent 60%);
+      filter: blur(30px);
+      opacity: 0.5;
+      animation: float 10s ease-in-out infinite alternate;
+      z-index: 0;
+    }
+    .orb.b { width: 280px; height: 280px; left: 16%; top: 12%; animation-duration: 12s; }
+    .orb.c { width: 200px; height: 200px; right: 12%; bottom: 10%; animation-duration: 11s; }
+    @keyframes float { from { transform: translateY(-10px); } to { transform: translateY(12px); } }
+
+    .content { position: relative; z-index: 2; }
+  </style>
+</head>
+<body>
+  <div class="orb b"></div>
+  <div class="orb c"></div>
+  <div class="wrap">
+    <div class="content">
+      <p class="line">There is something I want you to always remember…</p>
+      <p class="hint">take a breath. feel this with me.</p>
+      <a class="btn" href="final.html">Continue ❤️</a>
+    </div>
+  </div>
+</body>
+</html>

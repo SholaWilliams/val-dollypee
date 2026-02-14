@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>For You 💖</title>
+  <style>
+    :root {
+      --bg1: #ffe6f1;
+      --bg2: #fff8fb;
+      --card: #ffffffd6;
+      --accent: #ff3b7a;
+      --accentDark: #ff1f68;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100svh;
+      font-family: system-ui, sans-serif;
+      background: radial-gradient(circle at top, var(--bg2), var(--bg1));
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+    }
+
+    .hearts {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    /* Emoji hearts instead of CSS shapes */
+    .emoji-heart {
+      position: absolute;
+      animation: fall linear forwards;
+      filter: drop-shadow(0 6px 8px rgba(0,0,0,.12));
+      opacity: 0.95;
+      will-change: transform;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    @keyframes fall {
+      from { transform: translateY(-10vh) rotate(45deg); opacity: 0.95; }
+      to { transform: translateY(110vh) rotate(45deg); opacity: 0.2; }
+    }
+
+    .card {
+      position: relative;
+      z-index: 2;
+      width: min(760px, 94vw);
+      background: var(--card);
+      backdrop-filter: blur(10px);
+      border-radius: 22px;
+      padding: 24px;
+      box-shadow: 0 18px 60px rgba(0,0,0,.12);
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(24px, 4vw, 40px);
+      color: #2f1d2a;
+      text-align: center;
+    }
+
+    p {
+      margin: 0 0 14px;
+      text-align: center;
+      color: #4a2d3c;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 240px;
+      resize: vertical;
+      border-radius: 16px;
+      border: 1px solid #f3b7c8;
+      padding: 16px;
+      font-size: 16px;
+      line-height: 1.5;
+      outline: none;
+      background: #fff;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,.04);
+    }
+
+    textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(255,59,122,.18), inset 0 2px 8px rgba(0,0,0,.04);
+    }
+
+    .footer {
+      margin-top: 12px;
+      text-align: center;
+      font-size: 13px;
+      opacity: .7;
+    }
+
+    .button-row {
+      margin-top: 16px;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .accent-btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      padding: 12px 18px;
+      font-weight: 700;
+      box-shadow: 0 10px 24px rgba(0,0,0,.14);
+      cursor: pointer;
+    }
+
+    .accent-btn:hover { background: var(--accentDark); }
+
+    .music-btn {
+      display: none; /* legacy; kept for compatibility */
+    }
+
+    /* Floating audio widget */
+    .audio-widget {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,.8);
+      backdrop-filter: blur(8px);
+      border-radius: 14px;
+      padding: 10px 12px;
+      box-shadow: 0 12px 32px rgba(0,0,0,.18);
+    }
+    .audio-widget canvas { width: 160px; height: 50px; display: block; }
+    .audio-widget .play-btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-weight: 700;
+      box-shadow: 0 10px 24px rgba(0,0,0,.14);
+      cursor: pointer;
+    }
+    .audio-widget .play-btn:hover { background: var(--accentDark); }
+    .audio-widget .track-title { font-size: 13px; }
+
+    /* Envelope overlay */
+    .envelope-overlay { position: fixed; inset: 0; z-index: 6; display: grid; place-items: center; background: radial-gradient(circle at top, rgba(255,246,252,.9), rgba(255,230,243,.9)); backdrop-filter: blur(8px); }
+    .envelope { width: min(440px, 88vw); height: 280px; position: relative; border-radius: 18px; background: #fff; box-shadow: 0 18px 60px rgba(0,0,0,.16); }
+    .flap { position: absolute; inset: 0; transform-origin: top; background: linear-gradient(180deg, #ffe1ec, #ffd1e4); clip-path: polygon(0 0, 100% 0, 50% 62%); transition: transform .6s ease; }
+    .open .flap { transform: rotateX(180deg); }
+    .open .envelope { transform: translateY(-8px); transition: transform .3s ease; }
+    .open-tip { position: absolute; inset: auto 0 12px; text-align: center; font-weight: 700; color: #7a4d70; }
+
+    /* Typewriter */
+    .skip-type-btn { margin-top: 10px; background:#eae3f7; color:#4a2d3c; border:none; border-radius:999px; padding:8px 12px; font-weight:700; cursor:pointer; }
+  </style>
+</head>
+<body>
+  <div class="hearts" id="hearts"></div>
+  <div class="envelope-overlay" id="envelope">
+    <div class="envelope" id="envBox">
+      <div class="flap"></div>
+      <div class="open-tip">Tap… I wrote something for you ✉️</div>
+    </div>
+  </div>
+  <div id="audioWidget" class="audio-widget"></div>
+
+  <main class="card">
+    <h1>A Letter for You, Mami💕</h1>
+    <p>This little world was made with you in mind ✨</p>
+    <textarea placeholder="Dear ..." readonly></textarea>
+    <div class="button-row">
+      <button id="nextBtn" class="accent-btn">Next → Your Museum  ➜</button>
+      <button id="notesBtn" class="accent-btn" style="background:#7b5aa6">Love Notes 💌</button>
+    </div>
+    <div class="footer">Read softly… it was written from the heart.</div>
+    <div style="text-align:center"><button id="skipType" class="skip-type-btn">Skip typing</button></div>
+  </main>
+
+  <script>
+    const hearts = document.getElementById("hearts");
+
+    const emojis = ["❤️", "💖", "💘", "💕", "💞", "💓", "💗"];
+
+    function spawnHeart() {
+      const el = document.createElement("span");
+      el.className = "emoji-heart";
+      el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+
+      const size = Math.random() * 22 + 18; // 18–40px
+      const left = Math.random() * 100;     // vw
+      const duration = Math.random() * 4 + 6; // 6–10s
+      const delay = Math.random() * 1.5;      // 0–1.5s
+
+      el.style.fontSize = size + "px";
+      el.style.left = left + "vw";
+      el.style.animationDuration = duration + "s";
+      el.style.animationDelay = delay + "s";
+
+      hearts.appendChild(el);
+
+      const totalTime = (duration + delay) * 1000 + 250;
+      setTimeout(() => el.remove(), totalTime);
+    }
+
+    for (let i = 0; i < 28; i++) spawnHeart();
+    setInterval(spawnHeart, 360);
+
+    // Typewriter pre-fill the letter content
+    const textarea = document.querySelector("textarea");
+   const messageLines = [
+      "Dear Dolapo,",
+      "",
+      "From the very beginning, there has always been something quietly special about you.",
+      "",
+      "Not just your beauty...though you are truly beautiful. But your heart, your kindness, and the gentle strength you carry so effortlessly.",
+      "",
+      "The peace you bring into my life is real. In your laughter, I find warmth. In your presence, I find comfort. And in your love, I find home.",
+      "",
+      "Mami, you are more than someone I love.You are someone I deeply admire. The woman you are becoming inspires me, and being loved by you is something I never take for granted.",
+      "",
+      "Even across distance 😂(I laugh each time I think of it cause OMO), you still feel close to me. Still you. Always you.",
+      "",
+      "This little world I built is just a reflection of what you mean to me. It's a place where the moments you choose to share with me, the smiles, and quiet love can live.",
+      "",
+      "And if life gave me the choice again, in every lifetime… I would still choose you.",
+      "",
+      "Happy Valentine’s Day, Sweetie.",
+      "",
+      "Always yours,",
+      "— Your Olushola (you would say Olusholami😊💕)"
+    ];
+    let typingIndex = 0;
+    let typingTimer;
+    function startTypewriter(){
+      textarea.readOnly = true;
+      textarea.value = "";
+      const full = messageLines.join("\n");
+      function step(){
+        typingIndex = Math.min(full.length, typingIndex + 1); // slower: one char per tick
+        textarea.value = full.slice(0, typingIndex);
+        if(typingIndex < full.length){ typingTimer = setTimeout(step, 85); } // slower tick
+        else { textarea.readOnly = true; }
+      }
+      step();
+    }
+    document.getElementById("skipType").addEventListener("click", ()=>{
+      clearTimeout(typingTimer);
+      textarea.value = messageLines.join("\n");
+      textarea.readOnly = true;
+      const overlay = document.getElementById("envelope");
+      overlay.style.display = "none";
+    });
+
+    // Navigate to photo booth
+    document.getElementById("nextBtn").addEventListener("click", () => {
+      window.location.href = "photobooth.html";
+    });
+    document.getElementById("notesBtn").addEventListener("click", () => {
+      window.location.href = "love-notes.html";
+    });
+
+    // Initialize shared audio player with random tracks
+    const tracks = [
+      "assets/music/ordinary.mp3"  ,          // default single track (optional)
+    //   "assets/music/song1.mp3",
+    //   "assets/music/song2.mp3",
+    //   "assets/music/song3.mp3"
+    ];
+    window.addEventListener("DOMContentLoaded", () => {
+      if (window.initMusicPlayer) {
+        window.initMusicPlayer({ containerId: "audioWidget", tracks, autoStart: true });
+      }
+      const overlay = document.getElementById("envelope");
+      const box = document.getElementById("envBox");
+      function openEnvelope(){ box.classList.add("open"); setTimeout(()=>{ overlay.style.opacity = "0"; setTimeout(()=>{ overlay.style.display = "none"; startTypewriter(); }, 300); }, 450); }
+      overlay.addEventListener("click", openEnvelope);
+      document.addEventListener("pointerdown", function once(){ openEnvelope(); document.removeEventListener("pointerdown", once); }, { once:true });
+    });
+  </script>
+  <script src="assets/music/playlist.js"></script>
+  <script src="assets/player.js"></script>
+  <script>
+    // Lavender cursor trail hearts
+    (function(){
+      const trail = document.createElement('div');
+      trail.style.position='fixed'; trail.style.inset='0'; trail.style.pointerEvents='none'; trail.style.zIndex='7';
+      document.body.appendChild(trail);
+      function spawn(x,y){
+        const s=document.createElement('span'); s.textContent='💜'; // lavender-ish heart
+        s.style.position='absolute'; s.style.left=x+'px'; s.style.top=y+'px'; s.style.fontSize=(12+Math.random()*10)+'px'; s.style.opacity='0.9';
+        s.style.filter='drop-shadow(0 4px 6px rgba(181,126,220,.35))';
+        trail.appendChild(s);
+        const dx=(Math.random()*2-1)*24, dy=(Math.random()*2-1)*24;
+        const start=performance.now();
+        function frame(now){
+          const t=(now-start)/600; if(t>=1){ s.remove(); return; }
+          s.style.transform=`translate(${dx*t}px,${dy*t}px) scale(${1-t*0.2})`;
+          s.style.opacity=String(0.9*(1-t));
+          requestAnimationFrame(frame);
+        }
+        requestAnimationFrame(frame);
+      }
+      document.addEventListener('pointermove', e=>{ spawn(e.clientX, e.clientY); });
+    })();
+  </script>
+</body>
+</html>
