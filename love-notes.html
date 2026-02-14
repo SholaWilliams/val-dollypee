@@ -53,7 +53,7 @@
   <div class="wrap">
     <div class="nav">
       <button class="link" onclick="location.href='photobooth.html'"  style="background:#7b5aa6">Back</button>
-      <h1>Love Notes</h1>
+      <h1>Little Pieces from the Heart❤️</h1>
       <button class="link" onclick="location.href='jsyk.html'">Next → One More Thing…</button>
     </div>
 
@@ -90,6 +90,10 @@
 <div class="note">Your smile? Illegal. It steals my heart every time. 😌</div>
 
 <div class="note">I blame you for my constant smiling. 🙃</div>
+
+<div class="note">Just know you are the 1 4 me 💗</div>
+
+<div class="note">Can I call you Rose cause you make my world bloom. 🌹</div>
 
 <div class="note">Honestly… you’re too sweet. It’s suspicious. 😂</div>
 
@@ -132,15 +136,32 @@
     const dots = document.getElementById('dots');
     const total = slides.children.length;
     let idx = 0;
+    let autoId = null;
+    const autoDelay = 7500; // slower auto-advance
 
-    function render(){ slides.style.transform = `translateX(-${idx*100}%)`; [...dots.children].forEach((d,i)=> d.classList.toggle('active', i===idx)); }
-    function makeDots(){ for(let i=0;i<total;i++){ const d=document.createElement('div'); d.className='dot'; d.addEventListener('click', ()=>{ idx=i; render(); }); dots.appendChild(d);} render(); }
-    document.getElementById('prev').addEventListener('click', ()=>{ idx=(idx-1+total)%total; render(); });
-    document.getElementById('next').addEventListener('click', ()=>{ idx=(idx+1)%total; render(); });
+    function render(){
+      slides.style.transform = `translateX(-${idx*100}%)`;
+      [...dots.children].forEach((d,i)=> d.classList.toggle('active', i===idx));
+    }
+
+    function resetAuto(){
+      if(autoId) clearInterval(autoId);
+      autoId = setInterval(()=>{ idx=(idx+1)%total; render(); }, autoDelay);
+    }
+
+    function makeDots(){
+      for(let i=0;i<total;i++){
+        const d=document.createElement('div'); d.className='dot';
+        d.addEventListener('click', ()=>{ idx=i; render(); resetAuto(); });
+        dots.appendChild(d);
+      }
+      render();
+    }
+
+    document.getElementById('prev').addEventListener('click', ()=>{ idx=(idx-1+total)%total; render(); resetAuto(); });
+    document.getElementById('next').addEventListener('click', ()=>{ idx=(idx+1)%total; render(); resetAuto(); });
     makeDots();
-
-    // Auto-advance gently
-    setInterval(()=>{ idx=(idx+1)%total; render(); }, 4500);
+    resetAuto();
 
     // Secret popup logic (Options A & B)
     const backdrop = document.getElementById('secretBackdrop');
