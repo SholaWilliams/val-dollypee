@@ -36,11 +36,13 @@
     /* Secret popup */
     .secret-backdrop{position:fixed; inset:0; background:rgba(0,0,0,.5); backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; z-index:20; opacity:0; pointer-events:none; transition:opacity .3s ease;}
     .secret-backdrop.show{opacity:1; pointer-events:auto;}
-    .secret-card{background:#fff; padding:20px; border-radius:14px; box-shadow:0 18px 60px rgba(0,0,0,.18); max-width:420px; width:90%; text-align:center;}
+    .secret-card{background:#fff; padding:20px; border-radius:14px; box-shadow:0 18px 60px rgba(0,0,0,.18); max-width:420px; width:90%; text-align:center; position:relative;}
     .secret-card h2{margin:0 0 10px;}
     .secret-card p{margin:8px 0; line-height:1.5; color:#3a2434;}
     .close-btn{margin-top:12px; background:var(--accent); color:#fff; border:none; border-radius:999px; padding:10px 14px; font-weight:700; cursor:pointer; box-shadow:0 10px 24px rgba(0,0,0,.14);}
     .close-btn:hover{background:var(--accentDark)}
+    .close-x{position:absolute; top:10px; right:10px; width:34px; height:34px; border:none; border-radius:999px; background:#f3e6ef; color:#3a2434; font-size:18px; line-height:1; cursor:pointer; box-shadow:0 6px 16px rgba(0,0,0,.12);} 
+    .close-x:hover{background:#e9d6e4}
 
     /* Tiny hidden trigger */
     .hidden-trigger{position:fixed; right:12px; bottom:12px; font-size:14px; opacity:0.35; cursor:pointer; z-index:21; user-select:none;}
@@ -125,8 +127,9 @@
   <!-- Secret popup (shared for time trigger and hidden click) -->
   <div class="secret-backdrop" id="secretBackdrop">
     <div class="secret-card">
+      <button class="close-x" id="secretCloseX" aria-label="Close">×</button>
       <h2 id="secretTitle">Hey Sweetie…</h2>
-      <p id="secretBody">I know you’re still here reading. I just want you to know — this world exists because of you. And I would build it again… every time.</p>
+      <p id="secretBody">I know you’re still here reading. I just want you to know...This world exists because of You. And I would build it again… every time.</p>
       <button class="close-btn" id="secretClose">Close</button>
     </div>
   </div>
@@ -168,6 +171,7 @@
     const titleEl = document.getElementById('secretTitle');
     const bodyEl = document.getElementById('secretBody');
     const closeBtn = document.getElementById('secretClose');
+    const closeX = document.getElementById('secretCloseX');
     const trigger = document.getElementById('hiddenTrigger');
 
     function showSecret(t, b){
@@ -178,7 +182,7 @@
     }
     function hideSecret(){ backdrop.classList.remove('show'); }
     closeBtn.addEventListener('click', hideSecret);
-    backdrop.addEventListener('click', (e)=>{ if(e.target === backdrop) hideSecret(); });
+    closeX.addEventListener('click', hideSecret);
 
     // Hidden click trigger (Option A)
     trigger.addEventListener('click', ()=>{

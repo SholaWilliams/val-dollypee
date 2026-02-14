@@ -178,7 +178,7 @@
   <main class="card">
     <h1>A Letter for You, Mami💕</h1>
     <p>This little world was made with you in mind ✨</p>
-    <textarea placeholder="Dear ..."></textarea>
+    <textarea placeholder="Dear ..." readonly></textarea>
     <div class="button-row">
       <button id="nextBtn" class="accent-btn">Next → Your Museum  ➜</button>
       <button id="notesBtn" class="accent-btn" style="background:#7b5aa6">Love Notes 💌</button>
@@ -243,21 +243,21 @@
     let typingIndex = 0;
     let typingTimer;
     function startTypewriter(){
-      textarea.disabled = true;
+      textarea.readOnly = true;
       textarea.value = "";
       const full = messageLines.join("\n");
       function step(){
         typingIndex = Math.min(full.length, typingIndex + 1); // slower: one char per tick
         textarea.value = full.slice(0, typingIndex);
         if(typingIndex < full.length){ typingTimer = setTimeout(step, 85); } // slower tick
-        else { textarea.disabled = false; }
+        else { textarea.readOnly = true; }
       }
       step();
     }
     document.getElementById("skipType").addEventListener("click", ()=>{
       clearTimeout(typingTimer);
       textarea.value = messageLines.join("\n");
-      textarea.disabled = false;
+      textarea.readOnly = true;
       const overlay = document.getElementById("envelope");
       overlay.style.display = "none";
     });

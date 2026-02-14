@@ -211,15 +211,17 @@
       const wrap=document.createElement('div'); wrap.style.width='100%'; wrap.style.height='100%'; wrap.style.display='grid'; wrap.style.placeItems='center';
 
       // If last photo, show secret video instead of image
-      const isSecret = current === galleryImgs.length - 1;
+      const isSecret = current === galleryImgs.length;
       const img = document.createElement('img');
       img.style.maxWidth='92vw'; img.style.maxHeight='92vh'; img.style.borderRadius='12px'; img.style.boxShadow='0 18px 60px rgba(0,0,0,.5)'; img.style.userSelect='none'; img.style.pointerEvents='none';
 
       const vid = document.createElement('video');
       vid.autoplay = true; vid.loop = true; vid.muted = true; vid.playsInline = true;
       vid.style.maxWidth='92vw'; vid.style.maxHeight='92vh'; vid.style.borderRadius='12px'; vid.style.boxShadow='0 18px 60px rgba(0,0,0,.5)'; vid.style.userSelect='none';
-      const src1 = document.createElement('source'); src1.src='assets/videos/secret.mp4'; src1.type='video/mp4';
-      const src2 = document.createElement('source'); src2.src='assets/videos/secret.webm'; src2.type='video/webm';
+      const src1 = document.createElement('source'); 
+      src1.src='https://res.cloudinary.com/dgxfsmck5/video/upload/v1771111688/Me_and_Dee_together_thmvy0.mp4'; src1.type='video/mp4';
+      const src2 = document.createElement('source');
+      src2.src='https://res.cloudinary.com/dgxfsmck5/video/upload/v1771111905/Me_and_Dee_together_lakqoo.webm'; src2.type='video/webm';
       vid.appendChild(src1); vid.appendChild(src2);
 
       function setSrc(){
