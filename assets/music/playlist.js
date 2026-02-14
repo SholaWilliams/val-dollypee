@@ -9,5 +9,11 @@ window.PLAYLIST_TRACKS = [
   'assets/music/serenade.mp3',
   'assets/music/those-eyes.mp3',
   'assets/music/wanna-be-yours(violin).mp3',
-  'assets/music/i-have-nothing.mp3'
+  'assets/music/i-have-nothing.mp3',
+  'assets/music/best-part.mp3',
+  'assets/music/her.mp3',
+  'assets/music/i-am-your-angel.mp3',
+  'assets/music/legalize.mp3',
+  'assets/music/sweet-love.mp3',
+  'assets/music/yellow.mp3'
 ];
