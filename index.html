@@ -133,42 +133,60 @@
   <canvas id="confettiCanvas"></canvas>
 
   <main class="card">
-    <!-- ANIMAL WITH HEART -->
-    <svg class="art" viewBox="0 0 320 240" xmlns="http://www.w3.org/2000/svg">
+    <!-- DAISY (top-view, cartoonish, inline SVG) -->
+    <svg class="art" viewBox="0 0 320 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Top-view cartoon daisy">
       <defs>
-        <linearGradient id="fur" x1="0" x2="1">
-          <stop offset="0" stop-color="#f7c7a1"/>
-          <stop offset="1" stop-color="#f2a97b"/>
-        </linearGradient>
-        <linearGradient id="heart" x1="0" x2="1">
-          <stop offset="0" stop-color="#ff4d7d"/>
-          <stop offset="1" stop-color="#ff1f68"/>
+        <!-- Warm yellow center -->
+        <radialGradient id="daisyCenter" cx="50%" cy="45%" r="55%">
+          <stop offset="0" stop-color="#ffe07a"/>
+          <stop offset="0.55" stop-color="#ffc84a"/>
+          <stop offset="1" stop-color="#f5a623"/>
+        </radialGradient>
+        <!-- Soft white petals with a hint of shading -->
+        <linearGradient id="daisyPetal" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#ffffff"/>
+          <stop offset="1" stop-color="#f4f4f6"/>
         </linearGradient>
       </defs>
 
-      <path d="M250 50 C250 33 270 25 282 38
-               C294 25 314 33 314 50
-               C314 78 282 92 282 106
-               C282 92 250 78 250 50Z"
-            fill="url(#heart)"/>
+      <!-- Slight background glow for a friendly cartoon feel -->
+      <circle cx="160" cy="120" r="96" fill="#ffeef6" opacity="0.55"/>
 
-      <path d="M90 120 C90 70 140 40 190 60
-               C240 40 290 70 290 120
-               C290 180 240 210 190 210
-               C140 210 90 180 90 120Z"
-            fill="url(#fur)"/>
+      <!-- Single petal definition (rounded, cartoonish) -->
+      <g id="dPetal">
+        <path d="M160 44
+                 C146 50 138 66 140 86
+                 C142 106 154 118 160 122
+                 C166 118 178 106 180 86
+                 C182 66 174 50 160 44Z"
+              fill="url(#daisyPetal)" stroke="#e6e6ea" stroke-width="1.6"/>
+      </g>
 
-      <path d="M110 92 L95 55 L140 78 Z" fill="#f2a97b"/>
-      <path d="M270 92 L285 55 L240 78 Z" fill="#f2a97b"/>
+      <!-- Ring of petals -->
+      <use href="#dPetal" transform="rotate(0 160 120)"/>
+      <use href="#dPetal" transform="rotate(22.5 160 120)"/>
+      <use href="#dPetal" transform="rotate(45 160 120)"/>
+      <use href="#dPetal" transform="rotate(67.5 160 120)"/>
+      <use href="#dPetal" transform="rotate(90 160 120)"/>
+      <use href="#dPetal" transform="rotate(112.5 160 120)"/>
+      <use href="#dPetal" transform="rotate(135 160 120)"/>
+      <use href="#dPetal" transform="rotate(157.5 160 120)"/>
+      <use href="#dPetal" transform="rotate(180 160 120)"/>
+      <use href="#dPetal" transform="rotate(202.5 160 120)"/>
+      <use href="#dPetal" transform="rotate(225 160 120)"/>
+      <use href="#dPetal" transform="rotate(247.5 160 120)"/>
+      <use href="#dPetal" transform="rotate(270 160 120)"/>
+      <use href="#dPetal" transform="rotate(292.5 160 120)"/>
+      <use href="#dPetal" transform="rotate(315 160 120)"/>
+      <use href="#dPetal" transform="rotate(337.5 160 120)"/>
 
-      <circle cx="160" cy="130" r="8"/>
-      <circle cx="220" cy="130" r="8"/>
+      <!-- Center disk -->
+      <circle cx="160" cy="120" r="40" fill="url(#daisyCenter)" stroke="#d18b00" stroke-width="2"/>
 
-      <path d="M190 144 C186 144 182 148 182 152
-               C182 160 190 164 190 170
-               C190 164 198 160 198 152
-               C198 148 194 144 190 144Z"
-            fill="#ff7aa2"/>
+      <!-- Subtle cartoon face for charm (optional feel) -->
+      <circle cx="150" cy="118" r="4" fill="#623b00"/>
+      <circle cx="170" cy="118" r="4" fill="#623b00"/>
+      <path d="M150 130 Q160 136 170 130" stroke="#623b00" stroke-width="2.2" fill="none" stroke-linecap="round"/>
     </svg>
 
     <h1>Dee will you be my valentine?</h1>
@@ -179,7 +197,7 @@
     </section>
 
     <!-- HINT -->
-    <div class="hint" id="hint">“No” seems a bit shy 😈</div>
+    <div class="hint" id="hint">I mean it's a no brainer but try clicking No😈</div>
 
     <section class="result" id="result">
       <h2>YAY! 🎉</h2>
